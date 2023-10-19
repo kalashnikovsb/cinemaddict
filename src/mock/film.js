@@ -1,12 +1,12 @@
 import {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray} from '../utils.js';
-import {STRINGS, GENRES, NAMES, COUNTRIES, POSTERS} from '../const.js';
+import {TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, POSTERS} from '../const.js';
 
 export const generateFilm = () => ({
   id: String(getRandomInteger(0, 100)),
   comments: [],
   filmInfo: {
-    title: getRandomArrayElement(STRINGS),
-    alternativeTitle: getRandomArrayElement(STRINGS),
+    title: getRandomArrayElement(TITLES),
+    alternativeTitle: getRandomArrayElement(TITLES),
     totalRating: getRandomFloatingPoint(0, 10),
     poster: getRandomArrayElement(POSTERS),
     ageRating: getRandomInteger(0, 21),
@@ -19,7 +19,7 @@ export const generateFilm = () => ({
     },
     runtime: getRandomInteger(30, 240),
     genre: getRandomSubArray(GENRES),
-    description: getRandomArrayElement(STRINGS),
+    description: getRandomArrayElement(DESCRIPTIONS),
     userDetails: {
       watchlist: Boolean(getRandomInteger(0, 1)),
       alreadyWatched: Boolean(getRandomInteger(0, 1)),

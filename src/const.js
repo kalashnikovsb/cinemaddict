@@ -1,4 +1,17 @@
-const STRINGS = [
+const TITLES = [
+  'The Shawshank Redemption',
+  'Spider-Man: Across the Spider-Verse',
+  'Killers of the Flower Moon',
+  'Oppenheimer',
+  'Poor Things',
+  'The Shining',
+  'Dune: Part One',
+  'Past Lives',
+  'Sound of Freedom',
+  'John Wick: Chapter 4',
+];
+
+const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet. Ut enim ad minima veniam, quis nostrum exercitationem.',
   'Consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.',
   'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed ut perspiciatis unde omnis iste natus error sit voluptatem.',
@@ -65,4 +78,4 @@ const POSTERS = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-export {STRINGS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};
+export {TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};
