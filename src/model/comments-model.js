@@ -6,9 +6,9 @@ export default class CommentsModel {
   get = ({comments: arr}) => {
     const result = [];
     arr.forEach((arrItem) => {
-      const item = this.comments.find((comment) => comment.id === arrItem);
-      if (item) {
-        result.push(item);
+      const value = this.comments.find((comment) => comment.id === arrItem);
+      if (value) {
+        result.push(value);
       }
     });
     return result;
