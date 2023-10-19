@@ -1,5 +1,5 @@
 import {createElement} from '../render.js';
-import {getCorrectRuntime, getCorrectReleaseDate} from '../utils.js';
+import {getCorrectRuntime, getCorrectReleaseDate, getCorrectCommentDate} from '../utils.js';
 
 const getFilmControlsTemplate = (userDetails) => {
   const {watchlist, alreadyWatched, favorite} = userDetails;
@@ -12,6 +12,28 @@ const getFilmControlsTemplate = (userDetails) => {
   </section>`;
 };
 
+const getCommentsTemplate = (comments) => {
+  let result = '';
+  comments.forEach((data) => {
+    const {emotion, comment, author, date} = data;
+    result += `
+      <li class="film-details__comment">
+        <span class="film-details__comment-emoji">
+          <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+        </span>
+        <div>
+          <p class="film-details__comment-text">${comment}</p>
+          <p class="film-details__comment-info">
+            <span class="film-details__comment-author">${author}</span>
+            <span class="film-details__comment-day">${getCorrectCommentDate(date)}</span>
+            <button class="film-details__comment-delete">Delete</button>
+          </p>
+        </div>
+      </li>`;
+  });
+  return result;
+};
+
 const getGenresTemplate = (genres) => {
   let result = '';
   genres.forEach((genre) => {
@@ -20,7 +42,7 @@ const getGenresTemplate = (genres) => {
   return result;
 };
 
-const createPopupTemplate = (film) => {
+const createPopupTemplate = (film, comments) => {
   const {poster, title, alternativeTitle, totalRating, ageRating, director, writers, genre, actors, description, runtime, userDetails, release: {releaseCountry, date}} = film.filmInfo;
 
   return `<section class="film-details">
@@ -92,9 +114,10 @@ const createPopupTemplate = (film) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
+          ${getCommentsTemplate(comments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -133,12 +156,13 @@ const createPopupTemplate = (film) => {
 };
 
 export default class PopupView {
-  constructor(film) {
+  constructor(film, comments) {
     this.film = film;
+    this.comments = comments;
   }
 
   getTemplate() {
-    return createPopupTemplate(this.film);
+    return createPopupTemplate(this.film, this.comments);
   }
 
   getElement() {

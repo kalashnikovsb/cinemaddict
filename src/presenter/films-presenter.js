@@ -13,10 +13,11 @@ export default class BoardPresenter {
   filmsListOuterComponent = new FilmsListOuterView();
   filmsListInnerComponent = new FilmsListInnerView();
 
-  init = (boardContainer, filmsModel) => {
+  init = (boardContainer, filmsModel, commentsModel) => {
     this.boardContainer = boardContainer;
     this.filmsModel = filmsModel;
-    this.boardFilms = [...this.filmsModel.getFilms()];
+    this.commentsModel = commentsModel;
+    this.films = [...this.filmsModel.get()];
 
     render(new MainNavigationView(), this.boardContainer);
     render(new SortingView(), this.boardContainer);
@@ -24,12 +25,13 @@ export default class BoardPresenter {
     render(this.filmsListOuterComponent, this.filmsBoardComponent.getElement());
     render(this.filmsListInnerComponent, this.filmsListOuterComponent.getElement());
 
-    for (let i = 0; i < this.boardFilms.length; i++) {
-      render(new FilmCardView(this.boardFilms[i]), this.filmsListInnerComponent.getElement());
+    for (let i = 0; i < this.films.length; i++) {
+      render(new FilmCardView(this.films[i]), this.filmsListInnerComponent.getElement());
     }
 
     render(new ShowMoreButtonView(), this.filmsListOuterComponent.getElement());
-    render(new PopupView(this.boardFilms[0]), this.boardContainer.parentElement);
 
+    const comments = [...this.commentsModel.get(this.films[0])];
+    render(new PopupView(this.films[0], comments), this.boardContainer.parentElement);
   };
 }

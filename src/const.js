@@ -1,3 +1,7 @@
+const FILMS_COUNT = 10;
+const COMMENTS_COUNT = 50;
+const COMMENTS_LIMIT = 10;
+
 const TITLES = [
   'The Shawshank Redemption',
   'Spider-Man: Across the Spider-Verse',
@@ -78,4 +82,4 @@ const POSTERS = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-export {TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};
+export {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};

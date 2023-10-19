@@ -1,9 +1,9 @@
-import {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray} from '../utils.js';
-import {TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, POSTERS} from '../const.js';
+import {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray, getRandomIdentifiers} from '../utils.js';
+import {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, POSTERS} from '../const.js';
 
-export const generateFilm = () => ({
-  id: String(getRandomInteger(0, 100)),
-  comments: [],
+const generateFilm = () => ({
+  id: String(getRandomInteger(0, 10)),
+  comments: getRandomIdentifiers(COMMENTS_COUNT, COMMENTS_LIMIT),
   filmInfo: {
     title: getRandomArrayElement(TITLES),
     alternativeTitle: getRandomArrayElement(TITLES),
@@ -28,3 +28,5 @@ export const generateFilm = () => ({
     },
   },
 });
+
+export const generateFilms = () => Array.from({length: FILMS_COUNT}, generateFilm);
