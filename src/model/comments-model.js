@@ -1,16 +1,18 @@
 import {generateComments} from '../mock/comment.js';
 
 export default class CommentsModel {
-  comments = generateComments();
+  filmsModel = null;
+  allComments = [];
+  comments = [];
 
-  get = ({comments: arr}) => {
-    const result = [];
-    arr.forEach((arrItem) => {
-      const value = this.comments.find((comment) => comment.id === arrItem);
-      if (value) {
-        result.push(value);
-      }
-    });
-    return result;
+  constructor(filmsModel) {
+    this.filmsModel = filmsModel;
+    this.allComments = generateComments();
+  }
+
+  get = (film) => {
+    this.comments = this.allComments.filter((comment) =>
+      film.comments.includes(comment.id));
+    return this.comments;
   };
 }

@@ -21,6 +21,15 @@ const getRandomSubArray = (arr) => {
   return Array.from(result);
 };
 
+const getRandomIdentifiers = (count, limit) => {
+  const result = [];
+  const quantity = getRandomInteger(0, limit);
+  for (let i = 0; i < quantity; i++) {
+    result.push(String(getRandomInteger(0, count)));
+  }
+  return result;
+};
+
 const getCorrectRuntime = (durationOnMinutes) => {
   const hours = Math.floor(durationOnMinutes / 60);
   const minutes = durationOnMinutes % 60;
@@ -33,13 +42,4 @@ const getCorrectReleaseDate = (date) => dayjs(date).format('D MMMM YYYY');
 
 const getCorrectCommentDate = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
 
-const getRandomIdentifiers = (count, limit) => {
-  const result = [];
-  const quantity = getRandomInteger(0, limit);
-  for (let i = 0; i < quantity; i++) {
-    result.push(String(getRandomInteger(0, count)));
-  }
-  return result;
-};
-
-export {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray, getCorrectRuntime, getCorrectYear, getCorrectReleaseDate, getRandomIdentifiers, getCorrectCommentDate};
+export {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray, getRandomIdentifiers, getCorrectRuntime, getCorrectYear, getCorrectReleaseDate, getCorrectCommentDate};

@@ -9,6 +9,8 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import PopupView from '../view/popup-view.js';
 
 export default class BoardPresenter {
+  mainNavigationComponent = new MainNavigationView();
+  sortingComponent = new SortingView();
   filmsBoardComponent = new FilmsBoardView();
   filmsListOuterComponent = new FilmsListOuterView();
   filmsListInnerComponent = new FilmsListInnerView();
@@ -19,8 +21,8 @@ export default class BoardPresenter {
     this.commentsModel = commentsModel;
     this.films = [...this.filmsModel.get()];
 
-    render(new MainNavigationView(), this.boardContainer);
-    render(new SortingView(), this.boardContainer);
+    render(this.mainNavigationComponent, this.boardContainer);
+    render(this.sortingComponent, this.boardContainer);
     render(this.filmsBoardComponent, this.boardContainer);
     render(this.filmsListOuterComponent, this.filmsBoardComponent.getElement());
     render(this.filmsListInnerComponent, this.filmsListOuterComponent.getElement());

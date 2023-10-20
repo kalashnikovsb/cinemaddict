@@ -9,10 +9,11 @@ const headerElement = document.querySelector('.header');
 const statisticsElement = document.querySelector('.footer__statistics');
 const mainElement = document.querySelector('.main');
 
+const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel(filmsModel);
+
 render(new UserBlockView(), headerElement);
 render(new FilmsNumberView(), statisticsElement);
 
-const filmsModel = new FilmsModel();
-const commentsModel = new CommentsModel();
 const filmsPresenter = new FilmsPresenter();
 filmsPresenter.init(mainElement, filmsModel, commentsModel);
