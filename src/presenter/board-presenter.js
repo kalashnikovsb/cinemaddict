@@ -8,19 +8,23 @@ import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import PopupView from '../view/popup-view.js';
 
+const FILMS_COUNT_PER_STEP = 5;
+
 export default class BoardPresenter {
   #boardContainer = null;
   #filmsModel = null;
   #commentsModel = null;
+  #filmPopupComponent = null;
 
   #mainNavigationComponent = new MainNavigationView();
   #sortingComponent = new SortingView();
   #filmsBoardComponent = new FilmsBoardView();
   #filmsListOuterComponent = new FilmsListOuterView();
   #filmsListInnerComponent = new FilmsListInnerView();
-  #filmPopupComponent = null;
+  #showMoreButtonComponent = new ShowMoreButtonView();
 
   #films = [];
+  #renderedFilmsCount = FILMS_COUNT_PER_STEP;
 
   init = (boardContainer, filmsModel, commentsModel) => {
     this.#boardContainer = boardContainer;
@@ -34,11 +38,28 @@ export default class BoardPresenter {
     render(this.#filmsListOuterComponent, this.#filmsBoardComponent.element);
     render(this.#filmsListInnerComponent, this.#filmsListOuterComponent.element);
 
-    for (let i = 0; i < this.#films.length; i++) {
+    for (let i = 0; i < Math.min(this.#films.length, FILMS_COUNT_PER_STEP); i++) {
       this.#renderFilmCard(this.#films[i], this.#filmsListInnerComponent.element);
     }
 
-    render(new ShowMoreButtonView(), this.#filmsListOuterComponent.element);
+    if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      render(this.#showMoreButtonComponent, this.#filmsListOuterComponent.element);
+      this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
+    }
+  };
+
+  #onShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+    this.#films
+      .slice(this.#renderedFilmsCount, this.#renderedFilmsCount + FILMS_COUNT_PER_STEP)
+      .forEach((film) => this.#renderFilmCard(film, this.#filmsListInnerComponent.element));
+
+    this.#renderedFilmsCount += FILMS_COUNT_PER_STEP;
+
+    if (this.#renderedFilmsCount >= this.#films.length) {
+      this.#showMoreButtonComponent.element.remove();
+      this.#showMoreButtonComponent.removeElement();
+    }
   };
 
 

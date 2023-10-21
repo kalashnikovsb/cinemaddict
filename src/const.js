@@ -1,4 +1,4 @@
-const FILMS_COUNT = 10;
+const FILMS_COUNT = 17;
 const COMMENTS_COUNT = 50;
 const COMMENTS_LIMIT = 10;
 
