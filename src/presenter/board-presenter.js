@@ -34,51 +34,50 @@ export default class BoardPresenter {
     render(this.#filmsListInnerComponent, this.#filmsListOuterComponent.element);
 
     for (let i = 0; i < this.#films.length; i++) {
-      const currentFilm = this.#films[i];
-      const comments = [...this.#commentsModel.getComments(currentFilm)];
-      this.#renderFilmCard(this.#films[i], comments);
+      this.#renderFilmCard(this.#films[i], this.#filmsListInnerComponent.element);
     }
 
     render(new ShowMoreButtonView(), this.#filmsListOuterComponent.element);
   };
 
-  #renderFilmCard = (film, comments) => {
+
+  #renderFilmCard = (film, container) => {
     const filmCardComponent = new FilmCardView(film);
-    const filmPopupComponent = new PopupView(film, comments);
-
     const openPopupElement = filmCardComponent.element.querySelector('.film-card__link');
-    const closePopupElement = filmPopupComponent.element.querySelector('.film-details__close-btn');
-
-    render(filmCardComponent, this.#filmsListInnerComponent.element);
-
-    const openPopup = () => {
-      this.#boardContainer.parentElement.appendChild(filmPopupComponent.element);
-      document.body.classList.add('hide-overflow');
-    };
-
-    const closePopup = () => {
-      this.#boardContainer.parentElement.removeChild(filmPopupComponent.element);
-      document.body.classList.remove('hide-overflow');
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
 
     openPopupElement.addEventListener('click', (evt) => {
       evt.preventDefault();
-      openPopup();
-      document.addEventListener('keydown', onEscKeyDown);
+      this.#renderFilmPopup(film);
+      document.body.classList.add('hide-overflow');
+      // document.addEventListener('keydown', onEscKeyDown);
     });
+
+    render(filmCardComponent, container);
+  };
+
+
+  #renderFilmPopup = (film) => {
+    const comments = [...this.#commentsModel.getComments(film)];
+    const filmPopupComponent = new PopupView(film, comments);
+
+    const closePopupElement = filmPopupComponent.element.querySelector('.film-details__close-btn');
 
     closePopupElement.addEventListener('click', (evt) => {
       evt.preventDefault();
-      closePopup();
-      document.removeEventListener('keydown', onEscKeyDown);
+      filmPopupComponent.element.remove();
+      filmPopupComponent.removeElement();
+      document.body.classList.remove('hide-overflow');
+      // document.removeEventListener('keydown', onEscKeyDown);
     });
+
+    render(filmPopupComponent, this.#boardContainer.parentElement);
+
+    // const onEscKeyDown = (evt) => {
+    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
+    //     evt.preventDefault();
+    //     closePopup();
+    //     document.removeEventListener('keydown', onEscKeyDown);
+    //   }
+    // };
   };
 }
