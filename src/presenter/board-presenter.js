@@ -57,11 +57,11 @@ export default class BoardPresenter {
 
 
   #renderFilmPopup = (film) => {
-    const comments = [...this.#commentsModel.getComments(film)];
-
     if (this.#filmPopupComponent) {
       this.#removeFilmPopupComponent();
     }
+
+    const comments = [...this.#commentsModel.getComments(film)];
 
     this.#filmPopupComponent = new PopupView(film, comments);
 
