@@ -1,5 +1,5 @@
 import {render} from './render.js';
-import FilmsPresenter from './presenter/films-presenter.js';
+import BoardPresenter from './presenter/board-presenter.js';
 import UserBlockView from './view/user-block-view.js';
 import FilmsNumberView from './view/films-number-view.js';
 import FilmsModel from './model/films-model.js';
@@ -15,5 +15,5 @@ const commentsModel = new CommentsModel(filmsModel);
 render(new UserBlockView(), headerElement);
 render(new FilmsNumberView(), statisticsElement);
 
-const filmsPresenter = new FilmsPresenter();
+const filmsPresenter = new BoardPresenter();
 filmsPresenter.init(mainElement, filmsModel, commentsModel);
