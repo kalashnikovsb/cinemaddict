@@ -16,6 +16,8 @@ export default class BoardPresenter {
   #filmsModel = null;
   #commentsModel = null;
   #filmPopupComponent = null;
+  #renderedFilmsCount = FILMS_COUNT_PER_STEP;
+  #films = [];
 
   #sortingComponent = new SortingView();
   #filmsSectionComponent = new filmsSectionView();
@@ -23,33 +25,39 @@ export default class BoardPresenter {
   #filmsListInnerComponent = new FilmsListInnerView();
   #showMoreButtonComponent = new ShowMoreButtonView();
 
-  #films = [];
-  #renderedFilmsCount = FILMS_COUNT_PER_STEP;
 
-
-  init = (boardContainer, filmsModel, commentsModel) => {
+  constructor(boardContainer, filmsModel, commentsModel) {
     this.#boardContainer = boardContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
-    this.#films = [...this.#filmsModel.films];
+  }
 
+
+  init = () => {
+    this.#films = [...this.#filmsModel.films];
+    this.#renderBoard();
+  };
+
+
+  #renderBoard = () => {
     render(this.#filmsSectionComponent, this.#boardContainer);
 
     if (!this.#films.length) {
       render(new NoFilmsView(), this.#filmsSectionComponent.element);
-    } else {
-      render(this.#sortingComponent, this.#filmsSectionComponent.element, 'beforebegin');
-      render(this.#filmsListOuterComponent, this.#filmsSectionComponent.element);
-      render(this.#filmsListInnerComponent, this.#filmsListOuterComponent.element);
+      return;
+    }
 
-      for (let i = 0; i < Math.min(this.#films.length, FILMS_COUNT_PER_STEP); i++) {
-        this.#renderFilmCard(this.#films[i], this.#filmsListInnerComponent.element);
-      }
+    render(this.#sortingComponent, this.#filmsSectionComponent.element, 'beforebegin');
+    render(this.#filmsListOuterComponent, this.#filmsSectionComponent.element);
+    render(this.#filmsListInnerComponent, this.#filmsListOuterComponent.element);
 
-      if (this.#films.length > FILMS_COUNT_PER_STEP) {
-        render(this.#showMoreButtonComponent, this.#filmsListOuterComponent.element);
-        this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
-      }
+    for (let i = 0; i < Math.min(this.#films.length, FILMS_COUNT_PER_STEP); i++) {
+      this.#renderFilmCard(this.#films[i], this.#filmsListInnerComponent.element);
+    }
+
+    if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      render(this.#showMoreButtonComponent, this.#filmsListOuterComponent.element);
+      this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
     }
   };
 
@@ -89,9 +97,7 @@ export default class BoardPresenter {
     }
 
     const comments = [...this.#commentsModel.getComments(film)];
-
     this.#filmPopupComponent = new PopupView(film, comments);
-
     const closePopupElement = this.#filmPopupComponent.element.querySelector('.film-details__close-btn');
 
     closePopupElement.addEventListener('click', (evt) => {

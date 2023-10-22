@@ -17,5 +17,5 @@ render(new UserBlockView(), headerElement);
 render(new MainNavigationView(), mainElement);
 render(new FilmsNumberView(), statisticsElement);
 
-const filmsPresenter = new BoardPresenter();
-filmsPresenter.init(mainElement, filmsModel, commentsModel);
+const filmsPresenter = new BoardPresenter(mainElement, filmsModel, commentsModel);
+filmsPresenter.init();
