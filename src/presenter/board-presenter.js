@@ -1,7 +1,6 @@
 import {render} from '../render.js';
-import MainNavigationView from '../view/main-navigation-view.js';
 import SortingView from '../view/sorting-view.js';
-import FilmsBoardView from '../view/films-board-view.js';
+import filmsSectionView from '../view/films-section-view.js';
 import FilmsListOuterView from '../view/films-list-outer-view.js';
 import NoFilmsView from '../view/no-films-view.js';
 import FilmsListInnerView from '../view/films-list-inner-view.js';
@@ -18,9 +17,8 @@ export default class BoardPresenter {
   #commentsModel = null;
   #filmPopupComponent = null;
 
-  #mainNavigationComponent = new MainNavigationView();
   #sortingComponent = new SortingView();
-  #filmsBoardComponent = new FilmsBoardView();
+  #filmsSectionComponent = new filmsSectionView();
   #filmsListOuterComponent = new FilmsListOuterView();
   #filmsListInnerComponent = new FilmsListInnerView();
   #showMoreButtonComponent = new ShowMoreButtonView();
@@ -35,14 +33,13 @@ export default class BoardPresenter {
     this.#commentsModel = commentsModel;
     this.#films = [...this.#filmsModel.films];
 
-    render(this.#mainNavigationComponent, this.#boardContainer);
-    render(this.#filmsBoardComponent, this.#boardContainer);
+    render(this.#filmsSectionComponent, this.#boardContainer);
 
     if (!this.#films.length) {
-      render(new NoFilmsView(), this.#filmsBoardComponent.element);
+      render(new NoFilmsView(), this.#filmsSectionComponent.element);
     } else {
-      render(this.#sortingComponent, this.#boardContainer);
-      render(this.#filmsListOuterComponent, this.#filmsBoardComponent.element);
+      render(this.#sortingComponent, this.#filmsSectionComponent.element, 'beforebegin');
+      render(this.#filmsListOuterComponent, this.#filmsSectionComponent.element);
       render(this.#filmsListInnerComponent, this.#filmsListOuterComponent.element);
 
       for (let i = 0; i < Math.min(this.#films.length, FILMS_COUNT_PER_STEP); i++) {
