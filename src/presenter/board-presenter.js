@@ -42,7 +42,7 @@ export default class BoardPresenter {
   #renderBoard = () => {
     render(this.#filmsSectionComponent, this.#boardContainer);
 
-    if (!this.#films.length) {
+    if (this.#films.length === 0) {
       render(new NoFilmsView(), this.#filmsSectionComponent.element);
       return;
     }
