@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createUserBlockTemplate = () => `
 <section class="header__profile profile">
@@ -6,21 +6,8 @@ const createUserBlockTemplate = () => `
   <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
 </section>`;
 
-export default class UserBlockView {
-  #element = null;
-
+export default class UserBlockView extends AbstractView {
   get template() {
     return createUserBlockTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
