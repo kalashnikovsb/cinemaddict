@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import filmsSectionView from '../view/films-section-view.js';
 import FilmsListOuterView from '../view/films-list-outer-view.js';

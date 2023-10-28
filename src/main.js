@@ -1,4 +1,4 @@
-import {render} from './render.js';
+import {render} from '../src/framework/render.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import UserBlockView from './view/user-block-view.js';
 import MainNavigationView from './view/main-navigation-view.js';

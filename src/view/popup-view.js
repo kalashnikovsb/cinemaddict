@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {getCorrectRuntime, getCorrectReleaseDate, getCorrectCommentDate} from '../utils.js';
 
 const getFilmControlsTemplate = (userDetails) => {
@@ -12,35 +12,22 @@ const getFilmControlsTemplate = (userDetails) => {
   </section>`;
 };
 
-const getCommentsTemplate = (comments) => {
-  let result = '';
-  comments.forEach((data) => {
-    const {emotion, comment, author, date} = data;
-    result += `
-      <li class="film-details__comment">
-        <span class="film-details__comment-emoji">
-          <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
-        </span>
-        <div>
-          <p class="film-details__comment-text">${comment}</p>
-          <p class="film-details__comment-info">
-            <span class="film-details__comment-author">${author}</span>
-            <span class="film-details__comment-day">${getCorrectCommentDate(date)}</span>
-            <button class="film-details__comment-delete">Delete</button>
-          </p>
-        </div>
-      </li>`;
-  });
-  return result;
-};
+const getCommentsTemplate = (comments) => comments.map(({emotion, comment, author, date}) => `
+  <li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${comment}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${author}</span>
+        <span class="film-details__comment-day">${getCorrectCommentDate(date)}</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>`).join('');
 
-const getGenresTemplate = (genres) => {
-  let result = '';
-  genres.forEach((genre) => {
-    result += `<span class="film-details__genre">${genre}</span>`;
-  });
-  return result;
-};
+const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
 const createPopupTemplate = (film, comments) => {
   const {poster, title, alternativeTitle, totalRating, ageRating, director, writers, genre, actors, description, runtime, userDetails, release: {releaseCountry, date}} = film.filmInfo;
@@ -155,28 +142,17 @@ const createPopupTemplate = (film, comments) => {
   </section>`;
 };
 
-export default class PopupView {
-  #element = null;
+export default class PopupView extends AbstractView {
   #film = null;
   #comments = null;
 
   constructor(film, comments) {
+    super();
     this.#film = film;
     this.#comments = comments;
   }
 
   get template() {
     return createPopupTemplate(this.#film, this.#comments);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
