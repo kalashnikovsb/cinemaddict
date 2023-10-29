@@ -1,7 +1,28 @@
-const FILMS_COUNT = 12;
+const FILMS_COUNT = 30;
 const COMMENTS_COUNT = 50;
 const COMMENTS_LIMIT = 10;
 const FILMS_COUNT_PER_STEP = 5;
+const MAIN_NAVIGATION_ACTIVE_CLASS_NAME = 'main-navigation__item--active';
+const ALL_MOVIES_FILTER_NAME = 'All movies';
+
+const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
+};
+
+const UserStatusValue = {
+  NOVICE: 0,
+  FAN: 10,
+  MOVIE_BUFF: 20,
+};
+
+const UserStatusTitle = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};
 
 const TITLES = [
   'The Shawshank Redemption',
@@ -83,4 +104,4 @@ const POSTERS = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-export {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, FILMS_COUNT_PER_STEP, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};
+export {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, FILMS_COUNT_PER_STEP, MAIN_NAVIGATION_ACTIVE_CLASS_NAME, ALL_MOVIES_FILTER_NAME, FilterType, UserStatusValue, UserStatusTitle, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};
