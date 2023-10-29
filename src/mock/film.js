@@ -1,4 +1,5 @@
-import {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray, getRandomIdentifiers} from '../utils.js';
+import {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray} from '../utils/common.js';
+import {getRandomIdentifiers} from '../utils/film.js';
 import {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, POSTERS} from '../const.js';
 
 const generateFilm = () => ({

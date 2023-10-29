@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {getCorrectYear, getCorrectRuntime} from '../utils.js';
+import {getCorrectYear, getCorrectRuntime} from '../utils/film.js';
 
 const getShortDescription = (description) => {
   if (description.length >= 140) {
@@ -45,4 +45,14 @@ export default class FilmCardView extends AbstractView {
   get template() {
     return createFilmCardTemplate(this.#film);
   }
+
+  setFilmCardClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#clickHandler);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {getCorrectRuntime, getCorrectReleaseDate, getCorrectCommentDate} from '../utils.js';
+import {getCorrectRuntime, getCorrectReleaseDate, getCorrectCommentDate} from '../utils/film.js';
 
 const getFilmControlsTemplate = (userDetails) => {
   const {watchlist, alreadyWatched, favorite} = userDetails;
@@ -155,4 +155,14 @@ export default class PopupView extends AbstractView {
   get template() {
     return createPopupTemplate(this.#film, this.#comments);
   }
+
+  setCloseButtonClickHandler = (callback) => {
+    this._callback.closeButtonClick = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);
+  };
+
+  #closeButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
+  };
 }

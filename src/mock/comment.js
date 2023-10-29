@@ -1,5 +1,5 @@
 import {COMMENTS_COUNT, NAMES, EMOTIONS, DESCRIPTIONS} from '../const.js';
-import {getRandomInteger, getRandomArrayElement} from '../utils.js';
+import {getRandomInteger, getRandomArrayElement} from '../utils/common.js';
 
 export const generateComment = () => ({
   id: String(getRandomInteger(0, 30)),
