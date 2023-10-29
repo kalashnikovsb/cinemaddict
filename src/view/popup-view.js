@@ -1,36 +1,27 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {getCorrectRuntime, getCorrectReleaseDate, getCorrectCommentDate} from '../utils/film.js';
-
-const getFilmControlsTemplate = (userDetails) => {
-  const {watchlist, alreadyWatched, favorite} = userDetails;
-  const activeClassName = 'film-details__control-button--active';
-  return `
-  <section class="film-details__controls">
-    <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlist ? activeClassName : ''}" id="watchlist" name="watchlist">Add to watchlist</button>
-    <button type="button" class="film-details__control-button film-details__control-button--watched ${alreadyWatched ? activeClassName : ''}" id="watched" name="watched">Already watched</button>
-    <button type="button" class="film-details__control-button film-details__control-button--favorite ${favorite ? activeClassName : ''}" id="favorite" name="favorite">Add to favorites</button>
-  </section>`;
-};
-
-const getCommentsTemplate = (comments) => comments.map(({emotion, comment, author, date}) => `
-  <li class="film-details__comment">
-    <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
-    </span>
-    <div>
-      <p class="film-details__comment-text">${comment}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${getCorrectCommentDate(date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-  </li>`).join('');
+import {getCorrectRuntime, getCorrectReleaseDate} from '../utils/film.js';
+import {getPopupCommentsTemplate} from './popup-comments-template.js';
+import {getPopupControlsTemplate} from './popup-controls-template.js';
+import {getPopupEmojisTemplate} from './popup-emojis-template.js';
 
 const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
 const createPopupTemplate = (film, comments) => {
-  const {poster, title, alternativeTitle, totalRating, ageRating, director, writers, genre, actors, description, runtime, userDetails, release: {releaseCountry, date}} = film.filmInfo;
+  const {
+    poster,
+    title,
+    alternativeTitle,
+    totalRating,
+    ageRating,
+    director,
+    writers,
+    genre,
+    actors,
+    description,
+    runtime,
+    userDetails,
+    release: {releaseCountry, date}
+  } = film.filmInfo;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -96,7 +87,7 @@ const createPopupTemplate = (film, comments) => {
           </div>
         </div>
 
-        ${getFilmControlsTemplate(userDetails)}
+        ${getPopupControlsTemplate(userDetails)}
       </div>
 
       <div class="film-details__bottom-container">
@@ -104,7 +95,7 @@ const createPopupTemplate = (film, comments) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-          ${getCommentsTemplate(comments)}
+          ${getPopupCommentsTemplate(comments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -115,25 +106,7 @@ const createPopupTemplate = (film, comments) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+            ${getPopupEmojisTemplate()}
             </div>
           </div>
         </section>
