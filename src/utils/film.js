@@ -18,7 +18,7 @@ const getCorrectRuntime = (durationOnMinutes) => {
 };
 
 const getUserStatus = (films) => {
-  const watchedFilmCount = films.filter((film) => film.filmInfo.userDetails.alreadyWatched).length;
+  const watchedFilmCount = films.filter((film) => film.userDetails.alreadyWatched).length;
   if (watchedFilmCount > UserStatusValue.NOVICE && watchedFilmCount <= UserStatusValue.FAN) {
     return UserStatusTitle.NOVICE;
   }

@@ -7,6 +7,7 @@ import {getFilmPopupEmojisTemplate} from './film-popup-emojis-template.js';
 const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
 const createPopupTemplate = (film, comments) => {
+  const {userDetails} = film;
   const {
     poster,
     title,
@@ -19,8 +20,7 @@ const createPopupTemplate = (film, comments) => {
     actors,
     description,
     runtime,
-    userDetails,
-    release: {releaseCountry, date}
+    release: {releaseCountry, date},
   } = film.filmInfo;
 
   return `<section class="film-details">

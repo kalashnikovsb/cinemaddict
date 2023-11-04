@@ -1,9 +1,11 @@
 import {getRandomInteger, getRandomFloatingPoint, getRandomArrayElement, getRandomSubArray} from '../utils/common.js';
 import {getRandomIdentifiers} from '../utils/film.js';
 import {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, POSTERS} from '../const.js';
+import {nanoid} from 'nanoid';
 
 const generateFilm = () => ({
-  id: String(getRandomInteger(0, 10)),
+  // id: String(getRandomInteger(0, 10)),
+  id: nanoid(),
   comments: getRandomIdentifiers(COMMENTS_COUNT, COMMENTS_LIMIT),
   filmInfo: {
     title: getRandomArrayElement(TITLES),
@@ -21,12 +23,12 @@ const generateFilm = () => ({
     runtime: getRandomInteger(30, 240),
     genre: getRandomSubArray(GENRES),
     description: getRandomArrayElement(DESCRIPTIONS),
-    userDetails: {
-      watchlist: Boolean(getRandomInteger(0, 1)),
-      alreadyWatched: Boolean(getRandomInteger(0, 1)),
-      watchingDate: '2019-04-12T16:12:32.554Z',
-      favorite: Boolean(getRandomInteger(0, 1)),
-    },
+  },
+  userDetails: {
+    watchlist: Boolean(getRandomInteger(0, 1)),
+    alreadyWatched: Boolean(getRandomInteger(0, 1)),
+    watchingDate: '2019-04-12T16:12:32.554Z',
+    favorite: Boolean(getRandomInteger(0, 1)),
   },
 });
 

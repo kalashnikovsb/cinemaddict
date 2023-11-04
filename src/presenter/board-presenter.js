@@ -1,4 +1,5 @@
 import {FILMS_COUNT_PER_STEP} from '../const.js';
+import {updateItem} from '../utils/common.js';
 import {render, remove} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
@@ -21,6 +22,7 @@ export default class BoardPresenter {
   #commentsModel = null;
   #renderedFilmsCount = FILMS_COUNT_PER_STEP;
   #films = [];
+  #filmPresenter = new Map();
 
 
   constructor(boardContainer, filmsModel, commentsModel) {
@@ -70,8 +72,23 @@ export default class BoardPresenter {
 
 
   #renderFilmCard = (film, container) => {
-    const filmPresenter = new FilmPresenter(container, this.#boardContainer, this.#commentsModel);
+    const filmPresenter = new FilmPresenter(container, this.#boardContainer, this.#commentsModel, this.#filmChangeHandler);
     filmPresenter.init(film);
+    this.#filmPresenter.set(film.id, filmPresenter);
+  };
+
+
+  #filmChangeHandler = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+    this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+  };
+
+
+  #clearFilmsList = () => {
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    this.#renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    remove(this.#showMoreButtonComponent);
   };
 
 
