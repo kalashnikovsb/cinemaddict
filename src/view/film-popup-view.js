@@ -1,8 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {getCorrectRuntime, getCorrectReleaseDate} from '../utils/film.js';
-import {getPopupCommentsTemplate} from './popup-comments-template.js';
-import {getPopupControlsTemplate} from './popup-controls-template.js';
-import {getPopupEmojisTemplate} from './popup-emojis-template.js';
+import {getFilmPopupCommentsTemplate} from './film-popup-comments-template.js';
+import {getFilmPopupControlsTemplate} from './film-popup-controls-template.js';
+import {getFilmPopupEmojisTemplate} from './film-popup-emojis-template.js';
 
 const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -87,7 +87,7 @@ const createPopupTemplate = (film, comments) => {
           </div>
         </div>
 
-        ${getPopupControlsTemplate(userDetails)}
+        ${getFilmPopupControlsTemplate(userDetails)}
       </div>
 
       <div class="film-details__bottom-container">
@@ -95,7 +95,7 @@ const createPopupTemplate = (film, comments) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-          ${getPopupCommentsTemplate(comments)}
+          ${getFilmPopupCommentsTemplate(comments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -106,7 +106,7 @@ const createPopupTemplate = (film, comments) => {
             </label>
 
             <div class="film-details__emoji-list">
-            ${getPopupEmojisTemplate()}
+            ${getFilmPopupEmojisTemplate()}
             </div>
           </div>
         </section>
@@ -115,7 +115,7 @@ const createPopupTemplate = (film, comments) => {
   </section>`;
 };
 
-export default class PopupView extends AbstractView {
+export default class FilmPopupView extends AbstractView {
   #film = null;
   #comments = null;
 

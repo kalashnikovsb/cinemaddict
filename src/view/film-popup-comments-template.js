@@ -1,6 +1,6 @@
 import {getCorrectCommentDate} from '../utils/film.js';
 
-export const getPopupCommentsTemplate = (comments) => comments.map(({emotion, comment, author, date}) => `
+export const getFilmPopupCommentsTemplate = (comments) => comments.map(({emotion, comment, author, date}) => `
 <li class="film-details__comment">
   <span class="film-details__comment-emoji">
     <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">

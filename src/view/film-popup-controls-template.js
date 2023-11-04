@@ -1,4 +1,4 @@
-export const getPopupControlsTemplate = (userDetails) => {
+export const getFilmPopupControlsTemplate = (userDetails) => {
   const {watchlist, alreadyWatched, favorite} = userDetails;
   const activeClassName = 'film-details__control-button--active';
   return `

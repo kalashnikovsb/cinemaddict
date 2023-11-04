@@ -5,9 +5,8 @@ import FilmsSectionView from '../view/films-section-view.js';
 import AllMoviesView from '../view/all-movies-view.js';
 import NoFilmsView from '../view/no-films-view.js';
 import FilmsContainerView from '../view/films-container-view.js';
-import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
-import PopupView from '../view/popup-view.js';
+import FilmPresenter from './film-presenter.js';
 
 
 export default class BoardPresenter {
@@ -20,7 +19,6 @@ export default class BoardPresenter {
   #boardContainer = null;
   #filmsModel = null;
   #commentsModel = null;
-  #filmPopupComponent = null;
   #renderedFilmsCount = FILMS_COUNT_PER_STEP;
   #films = [];
 
@@ -64,42 +62,6 @@ export default class BoardPresenter {
   };
 
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.#removeFilmPopupComponent();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
-
-  #addFilmPopupComponent = (film) => {
-    this.#renderFilmPopup(film);
-    document.body.classList.add('hide-overflow');
-  };
-
-
-  #removeFilmPopupComponent = () => {
-    remove(this.#filmPopupComponent);
-    this.#filmPopupComponent = null;
-    document.body.classList.remove('hide-overflow');
-  };
-
-
-  #renderFilmPopup = (film) => {
-    if (this.#filmPopupComponent) {
-      this.#removeFilmPopupComponent();
-    }
-    const comments = [...this.#commentsModel.getComments(film)];
-    this.#filmPopupComponent = new PopupView(film, comments);
-    this.#filmPopupComponent.setCloseButtonClickHandler(() => {
-      this.#removeFilmPopupComponent();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    });
-    render(this.#filmPopupComponent, this.#boardContainer.parentElement);
-  };
-
-
   #renderFilms = (from, to, container) => {
     this.#films
       .slice(from, to)
@@ -108,12 +70,8 @@ export default class BoardPresenter {
 
 
   #renderFilmCard = (film, container) => {
-    const filmCardComponent = new FilmCardView(film);
-    filmCardComponent.setFilmCardClickHandler(() => {
-      this.#addFilmPopupComponent(film);
-      document.addEventListener('keydown', this.#escKeyDownHandler);
-    });
-    render(filmCardComponent, container);
+    const filmPresenter = new FilmPresenter(container, this.#boardContainer, this.#commentsModel);
+    filmPresenter.init(film);
   };
 
 
