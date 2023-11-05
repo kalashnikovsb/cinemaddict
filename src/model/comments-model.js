@@ -10,7 +10,7 @@ export default class CommentsModel {
     this.#allComments = generateComments();
   }
 
-  getComments(film) {
+  get(film) {
     this.#comments = this.#allComments.filter((comment) =>
       film.comments.includes(comment.id));
     return this.#comments;

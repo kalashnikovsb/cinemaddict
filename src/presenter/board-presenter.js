@@ -8,6 +8,7 @@ import NoFilmsView from '../view/no-films-view.js';
 import FilmsContainerView from '../view/films-container-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmPresenter from './film-presenter.js';
+import FilmPopupPresenter from './film-popup-presenter.js';
 
 
 export default class BoardPresenter {
@@ -22,6 +23,8 @@ export default class BoardPresenter {
   #commentsModel = null;
   #renderedFilmsCount = FILMS_COUNT_PER_STEP;
   #films = [];
+  #selectedFilm = null;
+  #filmPopupPresenter = null;
   #filmPresenter = new Map();
 
 
@@ -72,15 +75,68 @@ export default class BoardPresenter {
 
 
   #renderFilmCard = (film, container) => {
-    const filmPresenter = new FilmPresenter(container, this.#boardContainer, this.#commentsModel, this.#filmChangeHandler);
+    const filmPresenter = new FilmPresenter(
+      container,
+      this.#filmChangeHandler,
+      this.#addFilmPopupComponent,
+      this.#escKeyDownHandler,
+    );
     filmPresenter.init(film);
     this.#filmPresenter.set(film.id, filmPresenter);
+  };
+
+
+  #renderFilmPopup = () => {
+    const comments = [...this.#commentsModel.get(this.#selectedFilm)];
+    if (!this.#filmPopupPresenter) {
+      this.#filmPopupPresenter = new FilmPopupPresenter(
+        this.#boardContainer.parentElement,
+        this.#filmChangeHandler,
+        this.#removeFilmPopupComponent,
+        this.#escKeyDownHandler,
+      );
+    }
+    this.#filmPopupPresenter.init(this.#selectedFilm, comments);
   };
 
 
   #filmChangeHandler = (updatedFilm) => {
     this.#films = updateItem(this.#films, updatedFilm);
     this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+    if (this.#filmPopupPresenter && this.#selectedFilm.id === updatedFilm.id) {
+      this.#selectedFilm = updatedFilm;
+      this.#renderFilmPopup();
+    }
+  };
+
+
+  #addFilmPopupComponent = (film) => {
+    if (this.#selectedFilm && this.#selectedFilm.id === film.id) {
+      return;
+    }
+    if (this.#selectedFilm && this.#selectedFilm.id !== film.id) {
+      this.#removeFilmPopupComponent();
+    }
+    this.#selectedFilm = film;
+    this.#renderFilmPopup();
+    document.body.classList.add('hide-overflow');
+  };
+
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#removeFilmPopupComponent();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
+
+
+  #removeFilmPopupComponent = () => {
+    this.#filmPopupPresenter.destroy();
+    this.#filmPopupPresenter = null;
+    this.#selectedFilm = null;
+    document.body.classList.remove('hide-overflow');
   };
 
 
@@ -112,13 +168,13 @@ export default class BoardPresenter {
   };
 
 
-  #renderShowMoreButton = () => {
-    this.#showMoreButtonComponent.setClickHandler(this.#showMoreButtonClickhandler);
-    render(this.#showMoreButtonComponent, this.#allMoviesComponent.element);
+  #renderNoFilms = () => {
+    render(new NoFilmsView(), this.#filmsSectionComponent.element);
   };
 
 
-  #renderNoFilms = () => {
-    render(new NoFilmsView(), this.#filmsSectionComponent.element);
+  #renderShowMoreButton = () => {
+    this.#showMoreButtonComponent.setClickHandler(this.#showMoreButtonClickhandler);
+    render(this.#showMoreButtonComponent, this.#allMoviesComponent.element);
   };
 }
