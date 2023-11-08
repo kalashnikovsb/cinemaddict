@@ -24,6 +24,12 @@ const UserStatusTitle = {
   MOVIE_BUFF: 'Movie Buff',
 };
 
+const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
+
 const TITLES = [
   'The Shawshank Redemption',
   'Spider-Man: Across the Spider-Verse',
@@ -104,4 +110,22 @@ const POSTERS = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-export {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, FILMS_COUNT_PER_STEP, MAIN_NAVIGATION_ACTIVE_CLASS_NAME, ALL_MOVIES_FILTER_NAME, FilterType, UserStatusValue, UserStatusTitle, TITLES, DESCRIPTIONS, GENRES, NAMES, COUNTRIES, EMOTIONS, POSTERS};
+export {
+  FILMS_COUNT,
+  COMMENTS_COUNT,
+  COMMENTS_LIMIT,
+  FILMS_COUNT_PER_STEP,
+  MAIN_NAVIGATION_ACTIVE_CLASS_NAME,
+  ALL_MOVIES_FILTER_NAME,
+  FilterType,
+  UserStatusValue,
+  UserStatusTitle,
+  SortType,
+  TITLES,
+  DESCRIPTIONS,
+  GENRES,
+  NAMES,
+  COUNTRIES,
+  EMOTIONS,
+  POSTERS
+};

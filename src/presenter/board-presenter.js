@@ -1,5 +1,6 @@
-import {FILMS_COUNT_PER_STEP} from '../const.js';
+import {FILMS_COUNT_PER_STEP, SortType} from '../const.js';
 import {updateItem} from '../utils/common.js';
+import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
 import {render, remove} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
@@ -26,6 +27,8 @@ export default class BoardPresenter {
   #selectedFilm = null;
   #filmPopupPresenter = null;
   #filmPresenter = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedFilms = [];
 
 
   constructor(boardContainer, filmsModel, commentsModel) {
@@ -37,6 +40,7 @@ export default class BoardPresenter {
 
   init = () => {
     this.#films = [...this.#filmsModel.films];
+    this.#sourcedFilms = [...this.#filmsModel.films];
     this.#renderBoard();
   };
 
@@ -102,6 +106,7 @@ export default class BoardPresenter {
 
   #filmChangeHandler = (updatedFilm) => {
     this.#films = updateItem(this.#films, updatedFilm);
+    this.#sourcedFilms = updateItem(this.#sourcedFilms, updatedFilm);
     this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
     if (this.#filmPopupPresenter && this.#selectedFilm.id === updatedFilm.id) {
       this.#selectedFilm = updatedFilm;
@@ -148,8 +153,37 @@ export default class BoardPresenter {
   };
 
 
+  #sortTypeChangeHandler = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortFilms(sortType);
+    this.#clearFilmsList();
+    this.#renderFilms(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP), this.#filmsContainerComponent.element);
+    if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      this.#renderShowMoreButton();
+    }
+  };
+
+
+  #sortFilms = (sortType) => {
+    switch (sortType) {
+      case SortType.DATE:
+        this.#films.sort(sortFilmsByDate);
+        break;
+      case SortType.RATING:
+        this.#films.sort(sortFilmsByRating);
+        break;
+      default:
+        this.#films = [...this.#sourcedFilms];
+    }
+    this.#currentSortType = sortType;
+  };
+
+
   #renderSorting = () => {
     render(this.#sortingComponent, this.#boardContainer);
+    this.#sortingComponent.setSortTypeChangeHandler(this.#sortTypeChangeHandler);
   };
 
 

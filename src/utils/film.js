@@ -31,10 +31,24 @@ const getUserStatus = (films) => {
   return null;
 };
 
+
+const sortFilmsByDate = (filmA, filmB) => dayjs(filmB.filmInfo.release.date).diff(dayjs(filmA.filmInfo.release.date));
+
+const sortFilmsByRating = (filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating;
+
 const getCorrectYear = (date) => dayjs(date).format('YYYY');
 
 const getCorrectReleaseDate = (date) => dayjs(date).format('D MMMM YYYY');
 
 const getCorrectCommentDate = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
 
-export {getRandomIdentifiers, getCorrectRuntime, getCorrectYear, getCorrectReleaseDate, getCorrectCommentDate, getUserStatus};
+export {
+  getRandomIdentifiers,
+  getCorrectRuntime,
+  getUserStatus,
+  sortFilmsByDate,
+  sortFilmsByRating,
+  getCorrectYear,
+  getCorrectReleaseDate,
+  getCorrectCommentDate,
+};
