@@ -1,7 +1,7 @@
 import {FILMS_COUNT_PER_STEP, SortType} from '../const.js';
 import {updateItem} from '../utils/common.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
-import {render, remove} from '../framework/render.js';
+import {render, remove, replace} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
 import AllMoviesView from '../view/all-movies-view.js';
@@ -13,7 +13,7 @@ import FilmPopupPresenter from './film-popup-presenter.js';
 
 
 export default class BoardPresenter {
-  #sortingComponent = new SortingView();
+
   #filmsSectionComponent = new FilmsSectionView();
   #allMoviesComponent = new AllMoviesView();
   #filmsContainerComponent = new FilmsContainerView();
@@ -29,6 +29,7 @@ export default class BoardPresenter {
   #filmPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #sourcedFilms = [];
+  #sortingComponent = null;
 
 
   constructor(boardContainer, filmsModel, commentsModel) {
@@ -153,19 +154,6 @@ export default class BoardPresenter {
   };
 
 
-  #sortTypeChangeHandler = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
-    this.#sortFilms(sortType);
-    this.#clearFilmsList();
-    this.#renderFilms(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP), this.#filmsContainerComponent.element);
-    if (this.#films.length > FILMS_COUNT_PER_STEP) {
-      this.#renderShowMoreButton();
-    }
-  };
-
-
   #sortFilms = (sortType) => {
     switch (sortType) {
       case SortType.DATE:
@@ -181,8 +169,29 @@ export default class BoardPresenter {
   };
 
 
+  #sortTypeChangeHandler = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortFilms(sortType);
+    this.#clearFilmsList();
+    this.#renderSorting();
+    this.#renderFilms(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP), this.#filmsContainerComponent.element);
+    if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      this.#renderShowMoreButton();
+    }
+  };
+
+
   #renderSorting = () => {
-    render(this.#sortingComponent, this.#boardContainer);
+    if (!this.#sortingComponent) {
+      this.#sortingComponent = new SortingView(this.#currentSortType);
+      render(this.#sortingComponent, this.#boardContainer);
+    } else {
+      const updatedSortingComponent = new SortingView(this.#currentSortType);
+      replace(updatedSortingComponent, this.#sortingComponent);
+      this.#sortingComponent = updatedSortingComponent;
+    }
     this.#sortingComponent.setSortTypeChangeHandler(this.#sortTypeChangeHandler);
   };
 
