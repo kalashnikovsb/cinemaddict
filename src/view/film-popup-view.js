@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {getCorrectRuntime, getCorrectReleaseDate} from '../utils/film.js';
 import {getFilmPopupCommentsTemplate} from './film-popup-comments-template.js';
 import {getFilmPopupControlsTemplate} from './film-popup-controls-template.js';
@@ -6,7 +6,9 @@ import {getFilmPopupEmojisTemplate} from './film-popup-emojis-template.js';
 
 const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
-const createPopupTemplate = (film, comments) => {
+const getCurrentEmoji = (emotion) => emotion ? `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">` : '';
+
+const createPopupTemplate = (film, comments, state) => {
   const {userDetails} = film;
   const {
     poster,
@@ -22,6 +24,7 @@ const createPopupTemplate = (film, comments) => {
     runtime,
     release: {releaseCountry, date},
   } = film.filmInfo;
+  const {comment, emotion} = state;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -99,14 +102,16 @@ const createPopupTemplate = (film, comments) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">
+              ${getCurrentEmoji(emotion)}
+            </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-            ${getFilmPopupEmojisTemplate()}
+            ${getFilmPopupEmojisTemplate(emotion)}
             </div>
           </div>
         </section>
@@ -115,7 +120,7 @@ const createPopupTemplate = (film, comments) => {
   </section>`;
 };
 
-export default class FilmPopupView extends AbstractView {
+export default class FilmPopupView extends AbstractStatefulView {
   #film = null;
   #comments = null;
 
@@ -123,11 +128,51 @@ export default class FilmPopupView extends AbstractView {
     super();
     this.#film = film;
     this.#comments = comments;
+    this._state = {
+      comment: '',
+      emotion: '',
+    };
+
+    this.element.querySelector('.film-details__comment-input').addEventListener('change', this.#commentInputHandler);
+    this.element.querySelector('.film-details__emoji-list').addEventListener('input', this.#commentEmojiChangeHandler);
   }
 
   get template() {
-    return createPopupTemplate(this.#film, this.#comments);
+    return createPopupTemplate(this.#film, this.#comments, this._state);
   }
+
+  #commentInputHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      comment: evt.target.value,
+    });
+    console.log(this._state);
+  };
+
+  #commentEmojiChangeHandler = (evt) => {
+    evt.preventDefault();
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+    this.updateElement({
+      emotion: evt.target.value,
+    });
+    console.log(this._state);
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   setCloseButtonClickHandler = (callback) => {
     this._callback.closeButtonClick = callback;
