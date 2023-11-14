@@ -1,6 +1,11 @@
 import {getRandomInteger} from './common.js';
 import {UserStatusTitle, UserStatusValue} from '../const.js';
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 const getRandomIdentifiers = (count, limit) => {
   const result = [];
@@ -11,11 +16,6 @@ const getRandomIdentifiers = (count, limit) => {
   return result;
 };
 
-const getCorrectRuntime = (durationOnMinutes) => {
-  const hours = Math.floor(durationOnMinutes / 60);
-  const minutes = durationOnMinutes % 60;
-  return `${hours}h ${minutes}m`;
-};
 
 const getUserStatus = (films) => {
   const watchedFilmCount = films.filter((film) => film.userDetails.alreadyWatched).length;
@@ -32,15 +32,22 @@ const getUserStatus = (films) => {
 };
 
 
+const getCorrectCommentDate = (date) => {
+  const timeDiff = dayjs(date).diff(dayjs());
+  return dayjs.duration(timeDiff).humanize(true);
+};
+
+
+const getCorrectRuntime = (minutes) => dayjs.duration(minutes, 'minutes').format('H[h] mm[m]');
+
 const sortFilmsByDate = (filmA, filmB) => dayjs(filmB.filmInfo.release.date).diff(dayjs(filmA.filmInfo.release.date));
 
 const sortFilmsByRating = (filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating;
 
 const getCorrectYear = (date) => dayjs(date).format('YYYY');
 
-const getCorrectReleaseDate = (date) => dayjs(date).format('D MMMM YYYY');
+const getCorrectReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
-const getCorrectCommentDate = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
 
 export {
   getRandomIdentifiers,

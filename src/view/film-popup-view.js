@@ -163,6 +163,81 @@ export default class FilmPopupView extends AbstractStatefulView {
   };
 
 
+  static parseFilmToState = (
+    film,
+    comments,
+    checkedEmotion = null,
+    comment = '',
+    scrollPosition = 0
+  ) => ({
+    ...film,
+    comments,
+    checkedEmotion,
+    comment,
+    scrollPosition,
+  });
+
+
+  #updateViewData = () => {
+    this.updateViewData({
+      emotion: this._state.checkedEmotion,
+      comment: this._state.comment,
+      scrollPosition: this.element.scrollTop,
+    });
+  };
+
+
+  setCloseButtonClickHandler = (callback) => {
+    this._callback.closeButtonClick = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);
+  };
+
+
+  setAddToWatchlistClickHandler = (callback) => {
+    this._callback.addToWatchlistClick = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistClickHandler);
+  };
+
+
+  setAlreadyWatchedClickHandler = (callback) => {
+    this._callback.alreadyWatchedClick = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#alreadyWatchedClickHandler);
+  };
+
+
+  setAddToFavoritesClickHandler = (callback) => {
+    this._callback.addToFavoritesClick = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavoritesClickHandler);
+  };
+
+
+  #closeButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
+  };
+
+
+  #addToWatchlistClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#updateViewData();
+    this._callback.addToWatchlistClick();
+  };
+
+
+  #alreadyWatchedClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#updateViewData();
+    this._callback.alreadyWatchedClick();
+  };
+
+
+  #addToFavoritesClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#updateViewData();
+    this._callback.addToFavoritesClick();
+  };
+
+
   #commentInputHandler = (evt) => {
     evt.preventDefault();
     this._setState({
@@ -179,81 +254,6 @@ export default class FilmPopupView extends AbstractStatefulView {
     }
     this.updateElement({
       checkedEmotion: evt.target.value,
-      scrollPosition: this.element.scrollTop,
-    });
-  };
-
-
-  static parseFilmToState = (
-    film,
-    comments,
-    checkedEmotion = null,
-    comment = '',
-    scrollPosition = 0
-  ) => ({
-    ...film,
-    comments,
-    checkedEmotion,
-    comment,
-    scrollPosition,
-  });
-
-
-  setCloseButtonClickHandler = (callback) => {
-    this._callback.closeButtonClick = callback;
-    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);
-  };
-
-
-  #closeButtonClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.closeButtonClick();
-  };
-
-
-  setAddToWatchlistClickHandler = (callback) => {
-    this._callback.addToWatchlistClick = callback;
-    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistClickHandler);
-  };
-
-
-  #addToWatchlistClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#updateViewData();
-    this._callback.addToWatchlistClick();
-  };
-
-
-  setAlreadyWatchedClickHandler = (callback) => {
-    this._callback.alreadyWatchedClick = callback;
-    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#alreadyWatchedClickHandler);
-  };
-
-
-  #alreadyWatchedClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#updateViewData();
-    this._callback.alreadyWatchedClick();
-  };
-
-
-  setAddToFavoritesClickHandler = (callback) => {
-    this._callback.addToFavoritesClick = callback;
-    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavoritesClickHandler);
-  };
-
-
-  #addToFavoritesClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#updateViewData();
-    this._callback.addToFavoritesClick();
-  };
-
-
-  #updateViewData = () => {
-    this.updateViewData({
-      emotion: this._state.checkedEmotion,
-      comment: this._state.comment,
       scrollPosition: this.element.scrollTop,
     });
   };
