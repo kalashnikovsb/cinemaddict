@@ -10,6 +10,11 @@ export default class filmPopupPresenter {
   #filmPopupComponent = null;
   #film = null;
   #comments = null;
+  #viewData = {
+    emotion: null,
+    comment: '',
+    scrollPosition: 0,
+  };
 
 
   constructor(container, changeData, closeButtonClickHandler, escKeyDownHandler) {
@@ -26,7 +31,12 @@ export default class filmPopupPresenter {
 
     const prevFilmPopupComponent = this.#filmPopupComponent;
 
-    this.#filmPopupComponent = new FilmPopupView(this.#film, this.#comments);
+    this.#filmPopupComponent = new FilmPopupView(
+      this.#film,
+      this.#comments,
+      this.#viewData,
+      this.#updateViewData,
+    );
 
     this.#filmPopupComponent.setCloseButtonClickHandler(() => {
       this.#closeButtonClickHandler();
@@ -45,6 +55,11 @@ export default class filmPopupPresenter {
       replace(this.#filmPopupComponent, prevFilmPopupComponent);
     }
     remove(prevFilmPopupComponent);
+  };
+
+
+  #updateViewData = (viewData) => {
+    this.#viewData = {...viewData};
   };
 
 

@@ -11,8 +11,8 @@ const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-d
 const getCurrentEmoji = (emotion) => emotion ? `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">` : '';
 
 
-const createPopupTemplate = (film, comments, state) => {
-  const {userDetails} = film;
+const createPopupTemplate = (state) => {
+  const {userDetails, comment, checkedEmotion, comments} = state;
   const {
     poster,
     title,
@@ -26,8 +26,7 @@ const createPopupTemplate = (film, comments, state) => {
     description,
     runtime,
     release: {releaseCountry, date},
-  } = film.filmInfo;
-  const {comment, emotion} = state;
+  } = state.filmInfo;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -106,7 +105,7 @@ const createPopupTemplate = (film, comments, state) => {
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
-              ${getCurrentEmoji(emotion)}
+              ${getCurrentEmoji(checkedEmotion)}
             </div>
 
             <label class="film-details__comment-label">
@@ -114,7 +113,7 @@ const createPopupTemplate = (film, comments, state) => {
             </label>
 
             <div class="film-details__emoji-list">
-            ${getFilmPopupEmojisTemplate(emotion)}
+            ${getFilmPopupEmojisTemplate(checkedEmotion)}
             </div>
           </div>
         </section>
@@ -125,25 +124,22 @@ const createPopupTemplate = (film, comments, state) => {
 
 
 export default class FilmPopupView extends AbstractStatefulView {
-  #film = null;
-  #comments = null;
-
-  constructor(film, comments) {
+  constructor(film, comments, viewData, updateViewData) {
     super();
-    this.#film = film;
-    this.#comments = comments;
-    this._state = {
-      comment: '',
-      emotion: '',
-      pageYOffset: 0,
-    };
-
+    this._state = FilmPopupView.parseFilmToState(
+      film,
+      comments,
+      viewData.emotion,
+      viewData.comment,
+      viewData.scrollPosition
+    );
+    this.updateViewData = updateViewData;
     this.#setInnerHandlers();
   }
 
 
   get template() {
-    return createPopupTemplate(this.#film, this.#comments, this._state);
+    return createPopupTemplate(this._state);
   }
 
 
@@ -154,7 +150,16 @@ export default class FilmPopupView extends AbstractStatefulView {
 
 
   _restoreHandlers = () => {
+    this.setScrollPosition();
     this.#setInnerHandlers();
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
+    this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
+    this.setAddToFavoritesClickHandler(this._callback.addToFavoritesClick);
+  };
+
+  setScrollPosition = () => {
+    this.element.scrollTop = this._state.scrollPosition;
   };
 
 
@@ -162,10 +167,8 @@ export default class FilmPopupView extends AbstractStatefulView {
     evt.preventDefault();
     this._setState({
       comment: evt.target.value,
-      // pageYOffset: window.scrollY,
+      scrollPosition: this.element.scrollTop,
     });
-    console.log(this._state);
-    console.log(window.scrollY);
   };
 
 
@@ -175,12 +178,25 @@ export default class FilmPopupView extends AbstractStatefulView {
       return;
     }
     this.updateElement({
-      emotion: evt.target.value,
-      // pageYOffset: window.scrollY,
+      checkedEmotion: evt.target.value,
+      scrollPosition: this.element.scrollTop,
     });
-    console.log(this._state);
-    console.log(window.scrollY);
   };
+
+
+  static parseFilmToState = (
+    film,
+    comments,
+    checkedEmotion = null,
+    comment = '',
+    scrollPosition = 0
+  ) => ({
+    ...film,
+    comments,
+    checkedEmotion,
+    comment,
+    scrollPosition,
+  });
 
 
   setCloseButtonClickHandler = (callback) => {
@@ -203,6 +219,7 @@ export default class FilmPopupView extends AbstractStatefulView {
 
   #addToWatchlistClickHandler = (evt) => {
     evt.preventDefault();
+    this.#updateViewData();
     this._callback.addToWatchlistClick();
   };
 
@@ -215,6 +232,7 @@ export default class FilmPopupView extends AbstractStatefulView {
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
+    this.#updateViewData();
     this._callback.alreadyWatchedClick();
   };
 
@@ -227,6 +245,16 @@ export default class FilmPopupView extends AbstractStatefulView {
 
   #addToFavoritesClickHandler = (evt) => {
     evt.preventDefault();
+    this.#updateViewData();
     this._callback.addToFavoritesClick();
+  };
+
+
+  #updateViewData = () => {
+    this.updateViewData({
+      emotion: this._state.checkedEmotion,
+      comment: this._state.comment,
+      scrollPosition: this.element.scrollTop,
+    });
   };
 }
