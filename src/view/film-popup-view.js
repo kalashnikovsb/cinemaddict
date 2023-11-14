@@ -4,9 +4,12 @@ import {getFilmPopupCommentsTemplate} from './film-popup-comments-template.js';
 import {getFilmPopupControlsTemplate} from './film-popup-controls-template.js';
 import {getFilmPopupEmojisTemplate} from './film-popup-emojis-template.js';
 
+
 const getGenresTemplate = (genres) => genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
+
 const getCurrentEmoji = (emotion) => emotion ? `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">` : '';
+
 
 const createPopupTemplate = (film, comments, state) => {
   const {userDetails} = film;
@@ -120,6 +123,7 @@ const createPopupTemplate = (film, comments, state) => {
   </section>`;
 };
 
+
 export default class FilmPopupView extends AbstractStatefulView {
   #film = null;
   #comments = null;
@@ -131,23 +135,39 @@ export default class FilmPopupView extends AbstractStatefulView {
     this._state = {
       comment: '',
       emotion: '',
+      pageYOffset: 0,
     };
 
-    this.element.querySelector('.film-details__comment-input').addEventListener('change', this.#commentInputHandler);
-    this.element.querySelector('.film-details__emoji-list').addEventListener('input', this.#commentEmojiChangeHandler);
+    this.#setInnerHandlers();
   }
+
 
   get template() {
     return createPopupTemplate(this.#film, this.#comments, this._state);
   }
 
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
+    this.element.querySelector('.film-details__emoji-list').addEventListener('input', this.#commentEmojiChangeHandler);
+  };
+
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+  };
+
+
   #commentInputHandler = (evt) => {
     evt.preventDefault();
-    this.updateElement({
+    this._setState({
       comment: evt.target.value,
+      // pageYOffset: window.scrollY,
     });
     console.log(this._state);
+    console.log(window.scrollY);
   };
+
 
   #commentEmojiChangeHandler = (evt) => {
     evt.preventDefault();
@@ -156,28 +176,18 @@ export default class FilmPopupView extends AbstractStatefulView {
     }
     this.updateElement({
       emotion: evt.target.value,
+      // pageYOffset: window.scrollY,
     });
     console.log(this._state);
+    console.log(window.scrollY);
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   setCloseButtonClickHandler = (callback) => {
     this._callback.closeButtonClick = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);
   };
+
 
   #closeButtonClickHandler = (evt) => {
     evt.preventDefault();
