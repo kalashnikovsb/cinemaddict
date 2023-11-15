@@ -53,6 +53,7 @@ export default class filmPopupPresenter {
     }
     if (this.#container.contains(prevFilmPopupComponent.element)) {
       replace(this.#filmPopupComponent, prevFilmPopupComponent);
+      this.#filmPopupComponent.setScrollPosition();
     }
     remove(prevFilmPopupComponent);
   };
