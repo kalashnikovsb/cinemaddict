@@ -4,6 +4,7 @@ import {FILMS_COUNT, COMMENTS_COUNT, COMMENTS_LIMIT, TITLES, DESCRIPTIONS, GENRE
 import {nanoid} from 'nanoid';
 
 const generateFilm = () => ({
+  // id: String(getRandomInteger(0, 10)),
   id: nanoid(),
   comments: getRandomIdentifiers(COMMENTS_COUNT, COMMENTS_LIMIT),
   filmInfo: {

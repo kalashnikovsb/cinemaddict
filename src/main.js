@@ -1,7 +1,6 @@
 import {render} from '../src/framework/render.js';
 import {getUserStatus} from './utils/film.js';
 import {generateFilter} from './mock/filter.js';
-import FilterModel from './model/filter-model.js';
 
 import UserBlockView from './view/user-block-view.js';
 import StatisticsView from './view/statistics-view.js';
@@ -16,7 +15,6 @@ const mainElement = document.querySelector('.main');
 
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel(filmsModel);
-const filterModel = new FilterModel();
 const filmsPresenter = new BoardPresenter(mainElement, filmsModel, commentsModel);
 
 const userStatus = getUserStatus(filmsModel.films);
