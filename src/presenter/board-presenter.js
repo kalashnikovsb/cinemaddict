@@ -16,7 +16,6 @@ export default class BoardPresenter {
   #filmsSectionComponent = new FilmsSectionView();
   #allMoviesComponent = new AllMoviesView();
   #filmsContainerComponent = new FilmsContainerView();
-  #showMoreButtonComponent = new ShowMoreButtonView();
 
   #boardContainer = null;
   #filmsModel = null;
@@ -27,6 +26,7 @@ export default class BoardPresenter {
   #filmPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #sortingComponent = null;
+  #showMoreButtonComponent = null;
 
 
   constructor(boardContainer, filmsModel, commentsModel) {
@@ -34,24 +34,42 @@ export default class BoardPresenter {
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
 
-    this.#filmsModel.addObserver(this.#modelEventHandler);
-    // this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#filmsModel.addObserver(this.#filmModelEventHandler);
   }
 
 
-  #viewActionHandler = (actionType, updateType, update) => {
+
+
+
+  #filmViewActionHandler = (actionType, updateType, update) => {
     switch(actionType) {
       case UserAction.UPDATE_FILM:
         this.#filmsModel.updateFilm(updateType, update);
     }
   };
 
-  #modelEventHandler = (updateType, data) => {
+  #filmModelEventHandler = (updateType, data) => {
     switch(updateType) {
       case UpdateType.MAJOR:
-        this.#filmPresenter.get(data.id).init(data);
+        // this.#filmPresenter.get(data.id).init(data);
+        // if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
+        //   this.#selectedFilm = data;
+        //   this.#renderFilmPopup();
+        // }
+      this.#clearBoard({resetRenderedFilmsCount: true, resetSortType: true});
+      this.#renderBoard();
+      break;
     }
   };
+
+
+
+
+
+
+
+
+
 
 
   init = () => {
@@ -60,6 +78,7 @@ export default class BoardPresenter {
 
 
   #renderBoard = () => {
+
     if (this.films.length === 0) {
       this.#renderFilmsSection();
       this.#renderNoFilms();
@@ -76,6 +95,26 @@ export default class BoardPresenter {
 
     if (filmsCount > FILMS_COUNT_PER_STEP) {
       this.#renderShowMoreButton();
+    }
+  };
+
+
+  #clearBoard = ({resetRenderedFilmsCount = false, resetSortType = false} = {}) => {
+    const filmsCount = this.films.length;
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    remove(this.#sortingComponent);
+    remove(this.#filmsSectionComponent);
+    remove(this.#allMoviesComponent);
+    remove(this.#filmsContainerComponent);
+    remove(this.#showMoreButtonComponent);
+    if (resetRenderedFilmsCount) {
+      this.#renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    } else {
+      this.#renderedFilmsCount = Math.min(filmsCount, this.#renderedFilmsCount);
+    }
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
     }
   };
 
@@ -110,7 +149,7 @@ export default class BoardPresenter {
   #renderFilmCard = (film, container) => {
     const filmPresenter = new FilmPresenter(
       container,
-      this.#viewActionHandler,
+      this.#filmViewActionHandler,
       this.#addFilmPopupComponent,
       this.#escKeyDownHandler,
     );
@@ -124,22 +163,12 @@ export default class BoardPresenter {
     if (!this.#filmPopupPresenter) {
       this.#filmPopupPresenter = new FilmPopupPresenter(
         this.#boardContainer.parentElement,
-        this.#filmChangeHandler,
+        this.#filmViewActionHandler,
         this.#removeFilmPopupComponent,
         this.#escKeyDownHandler,
       );
     }
     this.#filmPopupPresenter.init(this.#selectedFilm, comments);
-  };
-
-
-  #filmChangeHandler = (updatedFilm) => {
-
-    this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
-    if (this.#filmPopupPresenter && this.#selectedFilm.id === updatedFilm.id) {
-      this.#selectedFilm = updatedFilm;
-      this.#renderFilmPopup();
-    }
   };
 
 
@@ -186,8 +215,8 @@ export default class BoardPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#clearFilmsList();
-    this.#renderSorting();
+    this.#clearBoard({resetRenderedFilmsCount: true});
+    this.#renderBoard();
 
     const filmsCount = this.films.length;
     const films = this.films.slice(0, Math.min(filmsCount, FILMS_COUNT_PER_STEP));
@@ -233,6 +262,7 @@ export default class BoardPresenter {
 
 
   #renderShowMoreButton = () => {
+    this.#showMoreButtonComponent = new ShowMoreButtonView();
     this.#showMoreButtonComponent.setClickHandler(this.#showMoreButtonClickHandler);
     render(this.#showMoreButtonComponent, this.#allMoviesComponent.element);
   };

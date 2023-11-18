@@ -1,5 +1,6 @@
 import {remove, replace, render} from '../framework/render.js';
 import FilmPopupView from '../view/film-popup-view.js';
+import {UpdateType, UserAction} from '../const.js';
 
 
 export default class filmPopupPresenter {
@@ -70,34 +71,43 @@ export default class filmPopupPresenter {
 
 
   #addToWatchlistClickHandler = () => {
-    this.#changeData({
-      ...this.#film,
-      userDetails: {
-        ...this.#film.userDetails,
-        watchlist: !this.#film.userDetails.watchlist,
-      },
-    });
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MAJOR,
+      {
+        ...this.#film,
+        userDetails: {
+          ...this.#film.userDetails,
+          watchlist: !this.#film.userDetails.watchlist,
+        },
+      });
   };
 
 
   #alreadyWatchedClickHandler = () => {
-    this.#changeData({
-      ...this.#film,
-      userDetails: {
-        ...this.#film.userDetails,
-        alreadyWatched: !this.#film.userDetails.alreadyWatched,
-      },
-    });
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MAJOR,
+      {
+        ...this.#film,
+        userDetails: {
+          ...this.#film.userDetails,
+          alreadyWatched: !this.#film.userDetails.alreadyWatched,
+        },
+      });
   };
 
 
   #addToFavoritesClickHandler = () => {
-    this.#changeData({
-      ...this.#film,
-      userDetails: {
-        ...this.#film.userDetails,
-        favorite: !this.#film.userDetails.favorite,
-      },
-    });
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MAJOR,
+      {
+        ...this.#film,
+        userDetails: {
+          ...this.#film.userDetails,
+          favorite: !this.#film.userDetails.favorite,
+        },
+      });
   };
 }
