@@ -40,24 +40,6 @@ export default class BoardPresenter {
   };
 
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
-
   get films() {
     switch (this.#currentSortType) {
       case SortType.DATE:
@@ -97,7 +79,7 @@ export default class BoardPresenter {
     this.#currentSortType = sortType;
     this.#clearFilmsList();
     this.#renderSorting();
-    this.#renderFilmsList();
+    this.#renderFilmsList(this.#filmsContainerComponent.element);
   };
 
 
@@ -111,14 +93,14 @@ export default class BoardPresenter {
     this.#renderFilmsSection();
     this.#renderAllMovies();
     this.#renderFilmsContainer(this.#allMoviesComponent.element);
-    this.#renderFilmsList();
+    this.#renderFilmsList(this.#filmsContainerComponent.element);
   };
 
 
-  #renderFilmsList = () => {
+  #renderFilmsList = (container) => {
     const filmsCount = this.films.length;
     const films = this.films.slice(0, Math.min(filmsCount, FILMS_COUNT_PER_STEP));
-    this.#renderFilms(films, this.#filmsContainerComponent.element);
+    this.#renderFilms(films, container);
     if (filmsCount > FILMS_COUNT_PER_STEP) {
       this.#renderShowMoreButton();
     }
@@ -126,24 +108,6 @@ export default class BoardPresenter {
 
 
   #renderFilms = (films, container) => films.forEach((film) => this.#renderFilmCard(film, container));
-
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
 
   #renderFilmCard = (film, container) => {
