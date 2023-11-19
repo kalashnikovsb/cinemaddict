@@ -1,6 +1,6 @@
 import {FILMS_COUNT_PER_STEP, SortType, UserAction, UpdateType} from '../const.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
-import {render, remove, replace} from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
 import AllMoviesView from '../view/all-movies-view.js';
@@ -15,7 +15,6 @@ export default class BoardPresenter {
   #filmsSectionComponent = new FilmsSectionView();
   #allMoviesComponent = new AllMoviesView();
   #filmsContainerComponent = new FilmsContainerView();
-  #showMoreButtonComponent = new ShowMoreButtonView();
 
   #boardContainer = null;
   #filmsModel = null;
@@ -25,7 +24,9 @@ export default class BoardPresenter {
   #filmPopupPresenter = null;
   #filmPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
+  #noFilmsComponent = null;
   #sortingComponent = null;
+  #showMoreButtonComponent = null;
 
 
   constructor(boardContainer, filmsModel, commentsModel) {
@@ -66,6 +67,8 @@ export default class BoardPresenter {
           this.#selectedFilm = data;
           this.#renderFilmPopup();
         }
+        this.#clearBoard({resetRenderedFilmsCount: true, resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
@@ -114,14 +117,15 @@ export default class BoardPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#clearFilmsList();
-    this.#renderSorting();
-    this.#renderFilmsList(this.#filmsContainerComponent.element);
+    this.#clearBoard({resetRenderedFilmsCount: true});
+    this.#renderBoard();
   };
 
 
   #renderBoard = () => {
-    if (this.films.length === 0) {
+    const films = this.films;
+    const filmsCount = films.length;
+    if (filmsCount === 0) {
       this.#renderFilmsSection();
       this.#renderNoFilms();
       return;
@@ -131,6 +135,27 @@ export default class BoardPresenter {
     this.#renderAllMovies();
     this.#renderFilmsContainer(this.#allMoviesComponent.element);
     this.#renderFilmsList(this.#filmsContainerComponent.element);
+  };
+
+
+  #clearBoard = ({resetRenderedFilmsCount = false, resetSortType = false} = {}) => {
+    const filmsCount = this.films.length;
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    remove(this.#noFilmsComponent);
+    remove(this.#sortingComponent);
+    remove(this.#filmsSectionComponent);
+    remove(this.#allMoviesComponent);
+    remove(this.#filmsContainerComponent);
+    if (resetRenderedFilmsCount) {
+      this.#renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    } else {
+      this.#renderedFilmsCount = Math.min(filmsCount, this.#renderedFilmsCount);
+    }
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
+
   };
 
 
@@ -212,15 +237,9 @@ export default class BoardPresenter {
 
 
   #renderSorting = () => {
-    if (!this.#sortingComponent) {
-      this.#sortingComponent = new SortingView(this.#currentSortType);
-      render(this.#sortingComponent, this.#boardContainer);
-    } else {
-      const updatedSortingComponent = new SortingView(this.#currentSortType);
-      replace(updatedSortingComponent, this.#sortingComponent);
-      this.#sortingComponent = updatedSortingComponent;
-    }
+    this.#sortingComponent = new SortingView(this.#currentSortType);
     this.#sortingComponent.setSortTypeChangeHandler(this.#sortTypeChangeHandler);
+    render(this.#sortingComponent, this.#boardContainer);
   };
 
 
@@ -245,6 +264,7 @@ export default class BoardPresenter {
 
 
   #renderShowMoreButton = () => {
+    this.#showMoreButtonComponent = new ShowMoreButtonView();
     this.#showMoreButtonComponent.setClickHandler(this.#showMoreButtonClickHandler);
     render(this.#showMoreButtonComponent, this.#allMoviesComponent.element);
   };
