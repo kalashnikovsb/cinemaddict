@@ -1,4 +1,4 @@
-import {FILMS_COUNT_PER_STEP, SortType} from '../const.js';
+import {FILMS_COUNT_PER_STEP, SortType, UserAction, UpdateType} from '../const.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
 import {render, remove, replace} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
@@ -32,12 +32,49 @@ export default class BoardPresenter {
     this.#boardContainer = boardContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
+    this.#filmsModel.addObserver(this.#modelEventHandler);
   }
 
 
   init = () => {
     this.#renderBoard();
   };
+
+
+  //
+  //
+  //
+  //
+
+
+  #viewActionHandler = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    switch(actionType) {
+      case UserAction.UPDATE_FILM:
+        this.#filmsModel.updateFilm(updateType, update);
+        break;
+    }
+
+  };
+
+  #modelEventHandler = (updateType, data) => {
+    console.log(updateType, data);
+    switch(updateType) {
+      case UpdateType.MAJOR:
+        this.#filmPresenter.get(data.id).init(data);
+        if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
+          this.#selectedFilm = data;
+          this.#renderFilmPopup();
+        }
+        break;
+    }
+  };
+
+
+  //
+  //
+  //
+  //
 
 
   get films() {
@@ -113,7 +150,7 @@ export default class BoardPresenter {
   #renderFilmCard = (film, container) => {
     const filmPresenter = new FilmPresenter(
       container,
-      this.#filmChangeHandler,
+      this.#viewActionHandler,
       this.#addFilmPopupComponent,
       this.#escKeyDownHandler,
     );
@@ -127,7 +164,7 @@ export default class BoardPresenter {
     if (!this.#filmPopupPresenter) {
       this.#filmPopupPresenter = new FilmPopupPresenter(
         this.#boardContainer.parentElement,
-        this.#filmChangeHandler,
+        this.#viewActionHandler,
         this.#removeFilmPopupComponent,
         this.#escKeyDownHandler,
       );
