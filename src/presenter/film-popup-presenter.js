@@ -47,6 +47,7 @@ export default class filmPopupPresenter {
     this.#filmPopupComponent.setAddToWatchlistClickHandler(this.#addToWatchlistClickHandler);
     this.#filmPopupComponent.setAlreadyWatchedClickHandler(this.#alreadyWatchedClickHandler);
     this.#filmPopupComponent.setAddToFavoritesClickHandler(this.#addToFavoritesClickHandler);
+    this.#filmPopupComponent.setDeleteCommentClickHandler(this.#deleteCommentClickHandler);
 
     if (prevFilmPopupComponent === null) {
       render(this.#filmPopupComponent, this.#container);
@@ -109,5 +110,15 @@ export default class filmPopupPresenter {
           favorite: !this.#film.userDetails.favorite,
         },
       });
+  };
+
+
+  #deleteCommentClickHandler = (update) => {
+    console.log(update);
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.MINOR,
+      update,
+    );
   };
 }

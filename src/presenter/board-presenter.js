@@ -33,7 +33,8 @@ export default class BoardPresenter {
     this.#boardContainer = boardContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
-    this.#filmsModel.addObserver(this.#modelEventHandler);
+    this.#filmsModel.addObserver(this.#filmModelEventHandler);
+    this.#commentsModel.addObserver(this.#commentsModelEventHandler);
   }
 
 
@@ -55,20 +56,34 @@ export default class BoardPresenter {
         this.#filmsModel.updateFilm(updateType, update);
         break;
     }
-
   };
 
-  #modelEventHandler = (updateType, data) => {
+  #filmModelEventHandler = (updateType, data) => {
     console.log(updateType, data);
     switch(updateType) {
+      // Добавление или удаление галочек фильмов
       case UpdateType.MAJOR:
-        this.#filmPresenter.get(data.id).init(data);
         if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
           this.#selectedFilm = data;
           this.#renderFilmPopup();
         }
         this.#clearBoard({resetRenderedFilmsCount: true, resetSortType: true});
         this.#renderBoard();
+        break;
+    }
+  };
+
+
+  #commentsModelEventHandler = (updateType, data) => {
+    console.log(updateType, data);
+    switch(updateType) {
+      // Добавление или удаление комментариев
+      case UpdateType.MINOR:
+        if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
+          this.#selectedFilm = data;
+          this.#renderFilmPopup();
+        }
+        this.#filmPresenter.get(data.id).init(data);
         break;
     }
   };
@@ -103,13 +118,13 @@ export default class BoardPresenter {
   };
 
 
-  #filmChangeHandler = (updatedFilm) => {
-    this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
-    if (this.#filmPopupPresenter && this.#selectedFilm.id === updatedFilm.id) {
-      this.#selectedFilm = updatedFilm;
-      this.#renderFilmPopup();
-    }
-  };
+  // #filmChangeHandler = (updatedFilm) => {
+  //   this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+  //   if (this.#filmPopupPresenter && this.#selectedFilm.id === updatedFilm.id) {
+  //     this.#selectedFilm = updatedFilm;
+  //     this.#renderFilmPopup();
+  //   }
+  // };
 
 
   #sortTypeChangeHandler = (sortType) => {
@@ -225,14 +240,6 @@ export default class BoardPresenter {
       this.#removeFilmPopupComponent();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
-  };
-
-
-  #clearFilmsList = () => {
-    this.#filmPresenter.forEach((presenter) => presenter.destroy());
-    this.#filmPresenter.clear();
-    this.#renderedFilmsCount = FILMS_COUNT_PER_STEP;
-    remove(this.#showMoreButtonComponent);
   };
 
 

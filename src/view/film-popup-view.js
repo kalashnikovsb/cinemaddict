@@ -210,6 +210,11 @@ export default class FilmPopupView extends AbstractStatefulView {
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavoritesClickHandler);
   };
 
+  setDeleteCommentClickHandler = (callback) => {
+    this._callback.deleteCommentClick = callback;
+    this.element.querySelector('.film-details__comment-delete').addEventListener('click', this.#deleteCommentClickHander);
+  };
+
 
   #closeButtonClickHandler = (evt) => {
     evt.preventDefault();
@@ -256,5 +261,11 @@ export default class FilmPopupView extends AbstractStatefulView {
       checkedEmotion: evt.target.value,
       scrollPosition: this.element.scrollTop,
     });
+  };
+
+
+  #deleteCommentClickHander = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteCommentClick();
   };
 }
