@@ -55,6 +55,12 @@ export default class BoardPresenter {
       case UserAction.UPDATE_FILM:
         this.#filmsModel.updateFilm(updateType, update);
         break;
+      case UserAction.DELETE_COMMENT:
+        this.#commentsModel.deleteComment(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this.#commentsModel.addComment(updateType, update);
+        break;
     }
   };
 
@@ -116,15 +122,6 @@ export default class BoardPresenter {
       remove(this.#showMoreButtonComponent);
     }
   };
-
-
-  // #filmChangeHandler = (updatedFilm) => {
-  //   this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
-  //   if (this.#filmPopupPresenter && this.#selectedFilm.id === updatedFilm.id) {
-  //     this.#selectedFilm = updatedFilm;
-  //     this.#renderFilmPopup();
-  //   }
-  // };
 
 
   #sortTypeChangeHandler = (sortType) => {

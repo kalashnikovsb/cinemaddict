@@ -114,7 +114,6 @@ export default class filmPopupPresenter {
 
 
   #deleteCommentClickHandler = (update) => {
-    console.log(update);
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.MINOR,

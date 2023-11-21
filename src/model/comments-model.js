@@ -30,8 +30,10 @@ export default class CommentsModel extends Observable {
   };
 
 
-  deleteComments = (updateType, update) => {
-    const index = this.#comments.findIndex((film) => film.id === update.id);
+  deleteComment = (updateType, id) => {
+    // const index = this.#comments.findIndex((film) => film.id === update.id);
+    console.log(id);
+    const index = this.#comments.findIndex((film) => film.id === id);
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
