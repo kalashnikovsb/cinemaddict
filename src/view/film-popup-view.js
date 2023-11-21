@@ -267,6 +267,6 @@ export default class FilmPopupView extends AbstractStatefulView {
 
   #deleteCommentClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteCommentClick(evt.target.getAttribute('data-id'));
+    this._callback.deleteCommentClick();
   };
 }

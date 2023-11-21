@@ -65,7 +65,6 @@ export default class BoardPresenter {
   };
 
   #filmModelEventHandler = (updateType, data) => {
-    console.log(updateType, data);
     switch(updateType) {
       // Добавление или удаление галочек фильмов
       case UpdateType.MAJOR:
@@ -81,7 +80,6 @@ export default class BoardPresenter {
 
 
   #commentsModelEventHandler = (updateType, data) => {
-    console.log(updateType, data);
     switch(updateType) {
       // Добавление или удаление комментариев
       case UpdateType.MINOR:
