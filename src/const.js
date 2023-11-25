@@ -3,7 +3,6 @@ const COMMENTS_COUNT = 50;
 const COMMENTS_LIMIT = 10;
 const FILMS_COUNT_PER_STEP = 5;
 const MAIN_NAVIGATION_ACTIVE_CLASS_NAME = 'main-navigation__item--active';
-const ALL_MOVIES_FILTER_NAME = 'All movies';
 
 const FilterType = {
   ALL: 'all',
@@ -128,7 +127,6 @@ export {
   COMMENTS_LIMIT,
   FILMS_COUNT_PER_STEP,
   MAIN_NAVIGATION_ACTIVE_CLASS_NAME,
-  ALL_MOVIES_FILTER_NAME,
   FilterType,
   UserStatusValue,
   UserStatusTitle,
