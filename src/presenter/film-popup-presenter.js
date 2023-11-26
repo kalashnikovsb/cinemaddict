@@ -113,11 +113,20 @@ export default class filmPopupPresenter {
   };
 
 
-  #deleteCommentClickHandler = (update) => {
+  #deleteCommentClickHandler = (commentId) => {
+    const filmCommentIdIndex = this.#film.comments.findIndex((filmCommentId) => filmCommentId === commentId);
+    const deletedComment = this.#comments.find((comment) => comment.id === commentId);
     this.#changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.MINOR,
-      update,
+      UpdateType.PATCH,
+      {
+        ...this.#film,
+        comments: [
+          ...this.#film.comments.slice(0, filmCommentIdIndex),
+          ...this.#film.comments.slice(filmCommentIdIndex + 1)
+        ]
+      },
+      deletedComment
     );
   };
 }

@@ -1,4 +1,4 @@
-import {FILMS_COUNT_PER_STEP, SortType, UserAction, UpdateType} from '../const.js';
+import {FILMS_COUNT_PER_STEP, SortType, UserAction, UpdateType, FilterType} from '../const.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
 import {render, remove} from '../framework/render.js';
@@ -40,7 +40,6 @@ export default class BoardPresenter {
 
     this.#filmsModel.addObserver(this.#modelEventHandler);
     this.#filterModel.addObserver(this.#modelEventHandler);
-    this.#commentsModel.addObserver(this.#commentsModelEventHandler);
   }
 
 
@@ -55,44 +54,46 @@ export default class BoardPresenter {
   //
 
 
-  #viewActionHandler = (actionType, updateType, update) => {
+  #viewActionHandler = (actionType, updateType, updateFilm, updateComment) => {
     switch(actionType) {
       case UserAction.UPDATE_FILM:
-        this.#filmsModel.updateFilm(updateType, update);
-        break;
-      case UserAction.DELETE_COMMENT:
-        this.#commentsModel.deleteComment(updateType, update);
+        this.#filmsModel.updateFilm(updateType, updateFilm);
         break;
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(updateType, update);
+        this.#commentsModel.addComment(updateType, updateComment);
+        this.#filmPopupPresenter.clearViewData();
+        this.#filmsModel.updateFilm(updateType, updateFilm);
         break;
+      case UserAction.DELETE_COMMENT:
+        this.#commentsModel.deleteComment(updateType, updateComment);
+        this.#filmsModel.updateFilm(updateType, updateFilm);
+        break;
+
     }
   };
 
   #modelEventHandler = (updateType, data) => {
     switch(updateType) {
       // Добавление или удаление галочек фильмов
-      case UpdateType.MAJOR:
+      case UpdateType.PATCH:
+        if (this.#filmPresenter.get(data.id)) {
+          this.#filmPresenter.get(data.id).init(data);
+        }
         if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
           this.#selectedFilm = data;
           this.#renderFilmPopup();
         }
-        this.#clearBoard({resetRenderedFilmsCount: true, resetSortType: true});
+        if (this.#filterModel.filter !== FilterType.ALL) {
+          this.#modelEventHandler(UpdateType.MINOR);
+        }
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
         this.#renderBoard();
         break;
-    }
-  };
-
-
-  #commentsModelEventHandler = (updateType, data) => {
-    switch(updateType) {
-      // Добавление или удаление комментариев
-      case UpdateType.MINOR:
-        if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
-          this.#selectedFilm = data;
-          this.#renderFilmPopup();
-        }
-        this.#filmPresenter.get(data.id).init(data);
+      case UpdateType.MAJOR:
+        this.#clearBoard({resetRenderedFilmsCount: true, resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
