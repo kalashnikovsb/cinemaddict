@@ -5,7 +5,7 @@ import {MAIN_NAVIGATION_ACTIVE_CLASS_NAME} from '../const.js';
 const getFilterOption = ({type, name: label, count}, currentFilter) => {
   const activeClassName = (type === currentFilter) ? MAIN_NAVIGATION_ACTIVE_CLASS_NAME : '';
   const countString = !(type === currentFilter) ? `<span class="main-navigation__item-count">${count}</span></a>` : '';
-  return `<a href="#${type}" class="main-navigation__item ${activeClassName}">${label}${countString}`;
+  return `<a href="#${type}" data-filter-type="${type}" class="main-navigation__item ${activeClassName}">${label}${countString}`;
 };
 
 
@@ -34,12 +34,15 @@ export default class FilterView extends AbstractView {
 
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
-    this.element.addEventListener('change', this.#filterTypeChangeHandler);
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
   };
 
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
+    this._callback.filterTypeChange(evt.target.getAttribute('data-filter-type'));
   };
 }

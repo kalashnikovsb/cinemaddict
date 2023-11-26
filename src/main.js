@@ -13,33 +13,12 @@ const headerElement = document.querySelector('.header');
 const statisticsElement = document.querySelector('.footer__statistics');
 const mainElement = document.querySelector('.main');
 
-const filters = [
-  {
-    type: 'all',
-    name: 'All movies',
-    count: 0,
-  },
-  {
-    type: 'watchlist',
-    name: 'Watchlist',
-    count: 0,
-  },
-  {
-    type: 'history',
-    name: 'History',
-    count: 0,
-  },
-  {
-    type: 'favorites',
-    name: 'Favorites',
-    count: 0,
-  },
-];
-
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel(filmsModel);
-const boardPresenter = new BoardPresenter(mainElement, filmsModel, commentsModel);
-const filterPresenter = new FilterPresenter(mainElement, FilterModel, FilmsModel, CommentsModel);
+const filterModel = new FilterModel();
+
+const boardPresenter = new BoardPresenter(mainElement, filmsModel, commentsModel, filterModel);
+const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel);
 
 const userStatus = getUserStatus(filmsModel.films);
 const filmsStatistics = filmsModel.films.length;

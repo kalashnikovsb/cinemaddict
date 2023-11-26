@@ -1,5 +1,6 @@
 import {FILMS_COUNT_PER_STEP, SortType, UserAction, UpdateType} from '../const.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
+import {filter} from '../utils/filter.js';
 import {render, remove} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
@@ -16,9 +17,11 @@ export default class BoardPresenter {
   #allMoviesComponent = new AllMoviesView();
   #filmsContainerComponent = new FilmsContainerView();
 
+
   #boardContainer = null;
   #filmsModel = null;
   #commentsModel = null;
+  #filterModel = null;
   #renderedFilmsCount = FILMS_COUNT_PER_STEP;
   #selectedFilm = null;
   #filmPopupPresenter = null;
@@ -29,11 +32,14 @@ export default class BoardPresenter {
   #showMoreButtonComponent = null;
 
 
-  constructor(boardContainer, filmsModel, commentsModel) {
+  constructor(boardContainer, filmsModel, commentsModel, filterModel) {
     this.#boardContainer = boardContainer;
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
-    this.#filmsModel.addObserver(this.#filmModelEventHandler);
+    this.#filterModel = filterModel;
+
+    this.#filmsModel.addObserver(this.#modelEventHandler);
+    this.#filterModel.addObserver(this.#modelEventHandler);
     this.#commentsModel.addObserver(this.#commentsModelEventHandler);
   }
 
@@ -63,7 +69,7 @@ export default class BoardPresenter {
     }
   };
 
-  #filmModelEventHandler = (updateType, data) => {
+  #modelEventHandler = (updateType, data) => {
     switch(updateType) {
       // Добавление или удаление галочек фильмов
       case UpdateType.MAJOR:
@@ -99,13 +105,18 @@ export default class BoardPresenter {
 
 
   get films() {
+    const filterType = this.#filterModel.filter;
+    const films = this.#filmsModel.films;
+    const filteredFilms = filter[filterType](films);
+
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return [...this.#filmsModel.films].sort(sortFilmsByDate);
+        return filteredFilms.sort(sortFilmsByDate);
       case SortType.RATING:
-        return [...this.#filmsModel.films].sort(sortFilmsByRating);
+        return filteredFilms.sort(sortFilmsByRating);
+      default:
+        return filteredFilms;
     }
-    return this.#filmsModel.films;
   }
 
 
@@ -126,7 +137,7 @@ export default class BoardPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#clearBoard({resetRenderedFilmsCount: true});
+    this.#clearBoard({resetRenderedFilmsCount: false, resetSortType: false});
     this.#renderBoard();
   };
 
@@ -170,9 +181,9 @@ export default class BoardPresenter {
 
   #renderFilmsList = (container) => {
     const filmsCount = this.films.length;
-    const films = this.films.slice(0, Math.min(filmsCount, FILMS_COUNT_PER_STEP));
+    const films = (this.films.slice(0, Math.min(filmsCount, this.#renderedFilmsCount)));
     this.#renderFilms(films, container);
-    if (filmsCount > FILMS_COUNT_PER_STEP) {
+    if (filmsCount > this.#renderedFilmsCount) {
       this.#renderShowMoreButton();
     }
   };
