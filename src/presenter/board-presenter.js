@@ -48,12 +48,6 @@ export default class BoardPresenter {
   };
 
 
-  //
-  //
-  //
-  //
-
-
   #viewActionHandler = (actionType, updateType, updateFilm, updateComment) => {
     switch(actionType) {
       case UserAction.UPDATE_FILM:
@@ -72,9 +66,8 @@ export default class BoardPresenter {
     }
   };
 
-  #modelEventHandler = (updateType, data) => {
-    console.log(updateType, data);
 
+  #modelEventHandler = (updateType, data) => {
     switch(updateType) {
       case UpdateType.PATCH:
         if (this.#filmPresenter.get(data.id)) {
@@ -102,12 +95,6 @@ export default class BoardPresenter {
         break;
     }
   };
-
-
-  //
-  //
-  //
-  //
 
 
   get films() {
@@ -218,8 +205,10 @@ export default class BoardPresenter {
         this.#viewActionHandler,
         this.#removeFilmPopupComponent,
         this.#escKeyDownHandler,
+        this.#ctrlEnterDownHandler,
       );
     }
+    document.addEventListener('keydown', this.#ctrlEnterDownHandler);
     this.#filmPopupPresenter.init(this.#selectedFilm, comments);
   };
 
@@ -238,6 +227,7 @@ export default class BoardPresenter {
 
 
   #removeFilmPopupComponent = () => {
+    document.removeEventListener('keydown', this.#ctrlEnterDownHandler);
     this.#filmPopupPresenter.destroy();
     this.#filmPopupPresenter = null;
     this.#selectedFilm = null;
@@ -250,6 +240,14 @@ export default class BoardPresenter {
       evt.preventDefault();
       this.#removeFilmPopupComponent();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
+
+
+  #ctrlEnterDownHandler = (evt) => {
+    if (evt.key === 'Enter' && (evt.metaKey || evt.ctrlKey)) {
+      evt.preventDefault();
+      this.#filmPopupPresenter.createComment();
     }
   };
 

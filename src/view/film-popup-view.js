@@ -188,6 +188,11 @@ export default class FilmPopupView extends AbstractStatefulView {
   };
 
 
+  setCommentData = () => {
+    this.#updateViewData();
+  };
+
+
   setCloseButtonClickHandler = (callback) => {
     this._callback.closeButtonClick = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);

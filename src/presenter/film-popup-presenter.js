@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
 import {remove, replace, render} from '../framework/render.js';
 import FilmPopupView from '../view/film-popup-view.js';
@@ -27,8 +28,6 @@ export default class filmPopupPresenter {
 
 
   init = (film, comments) => {
-    console.log('Presenter init!');
-
     this.#film = film;
     this.#comments = comments;
 
@@ -65,6 +64,15 @@ export default class filmPopupPresenter {
 
   #updateViewData = (viewData) => {
     this.#viewData = {...viewData};
+  };
+
+
+  clearViewData = () => {
+    this.#updateViewData({
+      comment: '',
+      emotion: null,
+      scrollPosition: this.#viewData.scrollPosition
+    });
   };
 
 
@@ -131,4 +139,35 @@ export default class filmPopupPresenter {
       deletedComment
     );
   };
+
+
+  createComment = () => {
+    this.#filmPopupComponent.setCommentData();
+    const {emotion, comment} = this.#viewData;
+
+    if (emotion && comment) {
+      const newCommentId = nanoid();
+      const createdComment = {
+        id: newCommentId,
+        author: 'Alexey',
+        date: new Date(),
+        emotion,
+        comment
+      };
+
+      this.#changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.PATCH,
+        {
+          ...this.#film,
+          comments: [
+            ...this.#film.comments,
+            newCommentId
+          ]
+        },
+        createdComment
+      );
+    }
+  };
+
 }

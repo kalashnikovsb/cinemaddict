@@ -23,22 +23,19 @@ export default class CommentsModel extends Observable {
 
 
   addComment = (updateType, update) => {
-    this.#comments = [
-      update,
-      ...this.#comments
-    ];
+    this.#allComments.push(update);
     this._notify(updateType, update);
   };
 
 
   deleteComment = (updateType, update) => {
-    const index = this.#comments.findIndex((film) => film.id === update.id);
+    const index = this.#allComments.findIndex((film) => film.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1)
+    this.#allComments = [
+      ...this.#allComments.slice(0, index),
+      ...this.#allComments.slice(index + 1)
     ];
     this._notify(updateType);
   };
