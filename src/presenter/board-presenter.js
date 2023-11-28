@@ -73,8 +73,9 @@ export default class BoardPresenter {
   };
 
   #modelEventHandler = (updateType, data) => {
+    console.log(updateType, data);
+
     switch(updateType) {
-      // Добавление или удаление галочек фильмов
       case UpdateType.PATCH:
         if (this.#filmPresenter.get(data.id)) {
           this.#filmPresenter.get(data.id).init(data);
@@ -92,8 +93,12 @@ export default class BoardPresenter {
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard({resetRenderedFilmsCount: true, resetSortType: true});
+        this.#clearBoard({resetRenderedFilmsCount: false, resetSortType: true});
         this.#renderBoard();
+        if (this.#filmPopupPresenter && this.#selectedFilm.id === data.id) {
+          this.#selectedFilm = data;
+          this.#renderFilmPopup();
+        }
         break;
     }
   };
