@@ -8,7 +8,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
 import CommentsModel from './model/comments-model.js';
 import FilterModel from './model/filter-model.js';
-import FilmsApiService from './films-api-service.js';
+import FilmsApiService from './api-services/films-api-service.js';
 
 const AUTHORIZATION = 'Basic 1234567890QAZxsw';
 const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';

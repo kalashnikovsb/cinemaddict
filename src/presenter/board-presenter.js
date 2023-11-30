@@ -1,7 +1,7 @@
 import {FILMS_COUNT_PER_STEP, SortType, UserAction, UpdateType, FilterType} from '../const.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
 import {filter} from '../utils/filter.js';
-import {render, remove} from '../framework/render.js';
+import {render, remove, RenderPosition} from '../framework/render.js';
 import SortingView from '../view/sorting-view.js';
 import FilmsSectionView from '../view/films-section-view.js';
 import AllMoviesView from '../view/all-movies-view.js';
@@ -269,7 +269,7 @@ export default class BoardPresenter {
   #renderSorting = () => {
     this.#sortingComponent = new SortingView(this.#currentSortType);
     this.#sortingComponent.setSortTypeChangeHandler(this.#sortTypeChangeHandler);
-    render(this.#sortingComponent, this.#boardContainer);
+    render(this.#sortingComponent, this.#filmsSectionComponent.element, RenderPosition.BEFOREBEGIN);
   };
 
 
