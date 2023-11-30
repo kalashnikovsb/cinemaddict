@@ -8,6 +8,7 @@ import AllMoviesView from '../view/all-movies-view.js';
 import NoFilmsView from '../view/no-films-view.js';
 import FilmsContainerView from '../view/films-container-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
+import LoadingView from '../view/loading-view.js';
 import FilmPresenter from './film-presenter.js';
 import FilmPopupPresenter from './film-popup-presenter.js';
 
@@ -16,6 +17,7 @@ export default class BoardPresenter {
   #filmsSectionComponent = new FilmsSectionView();
   #allMoviesComponent = new AllMoviesView();
   #filmsContainerComponent = new FilmsContainerView();
+  #loadingComponent = new LoadingView();
 
 
   #boardContainer = null;
@@ -30,6 +32,7 @@ export default class BoardPresenter {
   #noFilmsComponent = null;
   #sortingComponent = null;
   #showMoreButtonComponent = null;
+  #isLoading = true;
 
 
   constructor(boardContainer, filmsModel, commentsModel, filterModel) {
@@ -93,6 +96,11 @@ export default class BoardPresenter {
           this.#renderFilmPopup();
         }
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -136,15 +144,20 @@ export default class BoardPresenter {
 
 
   #renderBoard = () => {
+    this.#renderFilmsSection();
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     const films = this.films;
     const filmsCount = films.length;
     if (filmsCount === 0) {
-      this.#renderFilmsSection();
+      // this.#renderFilmsSection();
       this.#renderNoFilms();
       return;
     }
     this.#renderSorting();
-    this.#renderFilmsSection();
+    // this.#renderFilmsSection();
     this.#renderAllMovies();
     this.#renderFilmsContainer(this.#allMoviesComponent.element);
     this.#renderFilmsList(this.#filmsContainerComponent.element);
@@ -157,6 +170,7 @@ export default class BoardPresenter {
     this.#filmPresenter.clear();
     remove(this.#noFilmsComponent);
     remove(this.#sortingComponent);
+    remove(this.#loadingComponent);
     remove(this.#filmsSectionComponent);
     remove(this.#allMoviesComponent);
     remove(this.#filmsContainerComponent);
@@ -283,5 +297,10 @@ export default class BoardPresenter {
     this.#showMoreButtonComponent = new ShowMoreButtonView();
     this.#showMoreButtonComponent.setClickHandler(this.#showMoreButtonClickHandler);
     render(this.#showMoreButtonComponent, this.#allMoviesComponent.element);
+  };
+
+
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#filmsSectionComponent.element);
   };
 }

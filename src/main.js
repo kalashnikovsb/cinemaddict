@@ -4,16 +4,20 @@ import {getUserStatus} from './utils/film.js';
 import UserBlockView from './view/user-block-view.js';
 import StatisticsView from './view/statistics-view.js';
 import BoardPresenter from './presenter/board-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
 import CommentsModel from './model/comments-model.js';
 import FilterModel from './model/filter-model.js';
-import FilterPresenter from './presenter/filter-presenter.js';
+import FilmsApiService from './films-api-service.js';
+
+const AUTHORIZATION = 'Basic 1234567890QAZxsw';
+const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
 
 const headerElement = document.querySelector('.header');
 const statisticsElement = document.querySelector('.footer__statistics');
 const mainElement = document.querySelector('.main');
 
-const filmsModel = new FilmsModel();
+const filmsModel = new FilmsModel(new FilmsApiService(END_POINT, AUTHORIZATION));
 const commentsModel = new CommentsModel(filmsModel);
 const filterModel = new FilterModel();
 
@@ -25,7 +29,7 @@ const filmsStatistics = filmsModel.films.length;
 
 render(new UserBlockView(userStatus), headerElement);
 render(new StatisticsView(filmsStatistics), statisticsElement);
-// render(new FilterView(filters, 'all'), mainElement);
 
 filterPresenter.init();
 boardPresenter.init();
+filmsModel.init();
