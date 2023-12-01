@@ -3,39 +3,37 @@ import {UpdateType} from '../const.js';
 
 
 export default class FilmsModel extends Observable {
-  #filmsApiService = null;
   #films = [];
+  #apiService = null;
 
 
-  constructor(filmsApiService) {
+  constructor(apiService) {
     super();
-    this.#filmsApiService = filmsApiService;
-  }
-
-
-  get films() {
-    return this.#films;
+    this.#apiService = apiService;
   }
 
 
   init = async () => {
     try {
-      const films = await this.#filmsApiService.get();
+      const films = await this.#apiService.get();
       this.#films = films.map(this.#adaptToClient);
-    } catch(err) {
+    } catch {
       this.#films = [];
     }
     this._notify(UpdateType.INIT);
   };
 
 
-  updateFilm = async (updateType, update) => {
+  get = () => this.#films;
+
+
+  update = async (updateType, update) => {
     const index = this.#films.findIndex((film) => film.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }
     try {
-      const response = await this.#filmsApiService.updateFilm(update);
+      const response = await this.#apiService.updateFilm(update);
       const updatedFilm = this.#adaptToClient(response);
       this.#films = [
         ...this.#films.slice(0, index),
@@ -51,30 +49,30 @@ export default class FilmsModel extends Observable {
 
   #adaptToClient = (film) => {
     const adaptedFilm = {
-      id: film.id,
-      comments: film.comments,
-      filmInfo: {
-        title: film.film_info.title,
-        alternativeTitle: film.film_info.alternative_title,
-        totalRating: film.film_info.total_rating,
-        poster: film.film_info.poster,
-        ageRating: film.film_info.age_rating,
-        director: film.film_info.director,
-        writers: film.film_info.writers,
-        actors: film.film_info.actors,
-        release: {
-          date: film.film_info.release.date,
-          releaseCountry: film.film_info.release.release_country,
+      'id': film.id,
+      'comments': film.comments,
+      'filmInfo': {
+        'title': film.film_info.title,
+        'alternativeTitle': film.film_info.alternative_title,
+        'totalRating': film.film_info.total_rating,
+        'poster': film.film_info.poster,
+        'ageRating': film.film_info.age_rating,
+        'director': film.film_info.director,
+        'writers': film.film_info.writers,
+        'actors': film.film_info.actors,
+        'release': {
+          'date': film.film_info.release.date,
+          'releaseCountry': film.film_info.release.release_country,
         },
-        runtime: film.film_info.runtime,
-        genre: film.film_info.genre,
-        description: film.film_info.description,
+        'runtime': film.film_info.runtime,
+        'genre': film.film_info.genre,
+        'description': film.film_info.description,
       },
-      userDetails: {
-        watchlist: film.user_details.watchlist,
-        alreadyWatched: film.user_details.already_watched,
-        watchingDate: film.user_details.watching_date,
-        favorite: film.user_details.favorite,
+      'userDetails': {
+        'watchlist': film.user_details.watchlist,
+        'alreadyWatched': film.user_details.already_watched,
+        'watchingDate': film.user_details.watching_date,
+        'favorite': film.user_details.favorite,
       },
     };
     return adaptedFilm;

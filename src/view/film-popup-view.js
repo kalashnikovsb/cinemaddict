@@ -12,7 +12,7 @@ const getCurrentEmoji = (emotion) => emotion ? `<img src="images/emoji/${emotion
 
 
 const createPopupTemplate = (state) => {
-  const {userDetails, comment, checkedEmotion, comments} = state;
+  const {userDetails, comment, checkedEmotion, comments, isCommentLoadingError} = state;
   const {
     poster,
     title,
@@ -97,19 +97,19 @@ const createPopupTemplate = (state) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+          <h3 class="film-details__comments-title">
+            ${((!isCommentLoadingError) ? `Comments <span class="film-details__comments-count">${comments.length}</span>` : 'Error loading comments')}
+          </h3>
 
-          <ul class="film-details__comments-list">
-          ${getFilmPopupCommentsTemplate(comments)}
-          </ul>
+          ${(!isCommentLoadingError) ? `<ul class="film-details__comments-list">${getFilmPopupCommentsTemplate(comments)}</ul>` : ''}
 
-          <div class="film-details__new-comment">
+          <div class="film-details__new-comment" ${(isCommentLoadingError) ? 'style="opacity: 20%" disabled' : ''}>
             <div class="film-details__add-emoji-label">
               ${getCurrentEmoji(checkedEmotion)}
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${(isCommentLoadingError) ? 'disabled' : ''}>${comment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -124,17 +124,20 @@ const createPopupTemplate = (state) => {
 
 
 export default class FilmPopupView extends AbstractStatefulView {
-  constructor(film, comments, viewData, updateViewData) {
+  constructor(film, comments, viewData, updateViewData, isCommentLoadingError) {
     super();
     this._state = FilmPopupView.parseFilmToState(
       film,
       comments,
       viewData.emotion,
       viewData.comment,
-      viewData.scrollPosition
+      viewData.scrollPosition,
+      isCommentLoadingError
     );
     this.updateViewData = updateViewData;
-    this.#setInnerHandlers();
+    if (!isCommentLoadingError) {
+      this.#setInnerHandlers();
+    }
   }
 
 

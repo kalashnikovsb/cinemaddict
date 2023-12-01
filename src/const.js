@@ -42,6 +42,12 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
+
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
+
 const TITLES = [
   'The Shawshank Redemption',
   'Spider-Man: Across the Spider-Verse',
@@ -134,6 +140,7 @@ export {
   SortType,
   UserAction,
   UpdateType,
+  Method,
   TITLES,
   DESCRIPTIONS,
   GENRES,

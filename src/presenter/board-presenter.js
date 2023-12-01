@@ -54,16 +54,16 @@ export default class BoardPresenter {
   #viewActionHandler = (actionType, updateType, updateFilm, updateComment) => {
     switch(actionType) {
       case UserAction.UPDATE_FILM:
-        this.#filmsModel.updateFilm(updateType, updateFilm);
+        this.#filmsModel.update(updateType, updateFilm);
         break;
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(updateType, updateComment);
+        this.#commentsModel.add(updateType, updateComment);
         this.#filmPopupPresenter.clearViewData();
-        this.#filmsModel.updateFilm(updateType, updateFilm);
+        this.#filmsModel.update(updateType, updateFilm);
         break;
       case UserAction.DELETE_COMMENT:
-        this.#commentsModel.deleteComment(updateType, updateComment);
-        this.#filmsModel.updateFilm(updateType, updateFilm);
+        this.#commentsModel.delete(updateType, updateComment);
+        this.#filmsModel.update(updateType, updateFilm);
         break;
 
     }
@@ -107,7 +107,7 @@ export default class BoardPresenter {
 
   get films() {
     const filterType = this.#filterModel.filter;
-    const films = this.#filmsModel.films;
+    const films = this.#filmsModel.get();
     const filteredFilms = filter[filterType](films);
 
     switch (this.#currentSortType) {
@@ -152,12 +152,10 @@ export default class BoardPresenter {
     const films = this.films;
     const filmsCount = films.length;
     if (filmsCount === 0) {
-      // this.#renderFilmsSection();
       this.#renderNoFilms();
       return;
     }
     this.#renderSorting();
-    // this.#renderFilmsSection();
     this.#renderAllMovies();
     this.#renderFilmsContainer(this.#allMoviesComponent.element);
     this.#renderFilmsList(this.#filmsContainerComponent.element);
@@ -211,8 +209,9 @@ export default class BoardPresenter {
   };
 
 
-  #renderFilmPopup = () => {
-    const comments = [...this.#commentsModel.get(this.#selectedFilm)];
+  #renderFilmPopup = async () => {
+    const comments = await this.#commentsModel.get(this.#selectedFilm);
+    const isCommentLoadingError = !comments;
     if (!this.#filmPopupPresenter) {
       this.#filmPopupPresenter = new FilmPopupPresenter(
         this.#boardContainer.parentElement,
@@ -222,8 +221,10 @@ export default class BoardPresenter {
         this.#ctrlEnterDownHandler,
       );
     }
-    document.addEventListener('keydown', this.#ctrlEnterDownHandler);
-    this.#filmPopupPresenter.init(this.#selectedFilm, comments);
+    if (!isCommentLoadingError) {
+      document.addEventListener('kaydown', this.#ctrlEnterDownHandler);
+    }
+    this.#filmPopupPresenter.init(this.#selectedFilm, comments, isCommentLoadingError);
   };
 
 
