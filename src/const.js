@@ -39,13 +39,6 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
-  INIT: 'INIT',
-};
-
-
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
 };
 
 const TITLES = [
@@ -140,7 +133,6 @@ export {
   SortType,
   UserAction,
   UpdateType,
-  Method,
   TITLES,
   DESCRIPTIONS,
   GENRES,

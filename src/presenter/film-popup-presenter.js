@@ -27,9 +27,9 @@ export default class filmPopupPresenter {
   }
 
 
-  init = (film, comments, isCommentLoadingError) => {
+  init = (film, comments) => {
     this.#film = film;
-    this.#comments = (!isCommentLoadingError) ? comments : [];
+    this.#comments = comments;
 
     const prevFilmPopupComponent = this.#filmPopupComponent;
 
@@ -38,7 +38,6 @@ export default class filmPopupPresenter {
       this.#comments,
       this.#viewData,
       this.#updateViewData,
-      isCommentLoadingError
     );
 
     this.#filmPopupComponent.setCloseButtonClickHandler(() => {
@@ -49,10 +48,7 @@ export default class filmPopupPresenter {
     this.#filmPopupComponent.setAddToWatchlistClickHandler(this.#addToWatchlistClickHandler);
     this.#filmPopupComponent.setAlreadyWatchedClickHandler(this.#alreadyWatchedClickHandler);
     this.#filmPopupComponent.setAddToFavoritesClickHandler(this.#addToFavoritesClickHandler);
-
-    if (!isCommentLoadingError) {
-      this.#filmPopupComponent.setDeleteCommentClickHandler(this.#deleteCommentClickHandler);
-    }
+    this.#filmPopupComponent.setDeleteCommentClickHandler(this.#deleteCommentClickHandler);
 
     if (prevFilmPopupComponent === null) {
       render(this.#filmPopupComponent, this.#container);

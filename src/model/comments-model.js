@@ -1,37 +1,41 @@
 import Observable from '../framework/observable.js';
+import {generateComments} from '../mock/comment.js';
 
 
 export default class CommentsModel extends Observable {
+  #filmsModel = null;
+  #allComments = [];
   #comments = [];
-  #apiService = null;
 
 
-  constructor(apiService) {
+  constructor(filmsModel) {
     super();
-    this.#apiService = apiService;
+    this.#filmsModel = filmsModel;
+    this.#allComments = generateComments();
   }
 
 
-  get = async (film) => {
-    this.#comments = await this.#apiService.get(film);
+  get(film) {
+    this.#comments = this.#allComments.filter((comment) =>
+      film.comments.includes(comment.id));
     return this.#comments;
-  };
+  }
 
 
-  add = (updateType, update) => {
-    this.#comments.push(update);
+  addComment = (updateType, update) => {
+    this.#allComments.push(update);
     this._notify(updateType, update);
   };
 
 
-  delete = (updateType, update) => {
-    const index = this.#comments.findIndex((comment) => comment.id === update.id);
+  deleteComment = (updateType, update) => {
+    const index = this.#allComments.findIndex((film) => film.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1)
+    this.#allComments = [
+      ...this.#allComments.slice(0, index),
+      ...this.#allComments.slice(index + 1)
     ];
     this._notify(updateType);
   };
