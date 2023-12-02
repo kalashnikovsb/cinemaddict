@@ -222,7 +222,7 @@ export default class BoardPresenter {
     }
     this.#selectedFilm = film;
     this.#renderFilmPopup();
-    document.body.classList.add('hide-overflow')
+    document.body.classList.add('hide-overflow');
   };
 
 
