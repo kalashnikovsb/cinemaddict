@@ -25,7 +25,6 @@ const filmsStatistics = filmsModel.films.length;
 
 render(new UserBlockView(userStatus), headerElement);
 render(new StatisticsView(filmsStatistics), statisticsElement);
-// render(new FilterView(filters, 'all'), mainElement);
 
 filterPresenter.init();
 boardPresenter.init();
